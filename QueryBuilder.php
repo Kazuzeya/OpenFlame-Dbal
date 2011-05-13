@@ -54,6 +54,11 @@ class QueryBuilder extends Query
 	protected $whereIns = array();
 
 	/*
+	 * @var array - Where conditions
+	 */
+	protected $ors = array();
+
+	/*
 	 * @var array - start offset
 	 */
 	protected $starts = array();
@@ -209,6 +214,39 @@ class QueryBuilder extends Query
 	 */
 	public function orWhere()
 	{
+		$args = func_get_args();
+
+		switch(func_num_args())
+		{
+			case 3:
+				$this->ors[] = array($args[0] => $args[1], $args[0] => $args[2]);
+			case 4:
+				$this->ors[] = array($args[0] => $args[1], $args[2] => $args[3]);
+			default:
+				//@todo throw new Exception
+				return;
+			break;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * sub WHERE - Adds parans to indicate priority in the where
+	 * @param mixed
+	 * @return \OpenFlame\Dbal\QueryBuilder - Provides a fluent interface.
+	 */
+	public function subWhere()
+	{
+	}
+
+	/**
+	 * end sub WHERE - Adds parans to indicate priority in the where (terminator)
+	 * @param mixed
+	 * @return \OpenFlame\Dbal\QueryBuilder - Provides a fluent interface.
+	 */
+	public function endSubWhere()
+	{
 	}
 
 	/**
@@ -218,6 +256,16 @@ class QueryBuilder extends Query
 	 */
 	public function orderBy()
 	{
+		$args = func_get_args();
+
+		if(func_num_args() == 1)
+		{
+			$this->orderBy = array_merge($this->orderBy, $this->normalizeArray($args[0]));
+		}
+		else
+		{
+			$this->orderBy = array_merge($this->orderBy, $args);
+		}
 	}
 
 	/**
@@ -227,11 +275,12 @@ class QueryBuilder extends Query
 	 */
 	public function orderDirection($dir)
 	{
-		$orderDir = ($dir == 'ASC') ? 'ASC' : 'DESC';
+		$this->orderDir = ($dir == 'ASC') ? 'ASC' : 'DESC';
 
 		return $this;
 	}
 
+	// for testing - remove later
 	public function d() {var_dump($this->sets);}
 
 	/**

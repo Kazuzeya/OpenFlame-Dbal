@@ -66,7 +66,7 @@ class Connection
 		$i = sizeof(static::$pdo);
 
 		// Shortcut method
-		if($args[0] instanceof PDO)
+		if(func_num_args() == 1 && $args[0] instanceof PDO)
 		{
 			static::$pdo[$i] = $args[0];
 			return $i; 
