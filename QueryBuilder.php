@@ -23,8 +23,19 @@ if(!defined('OpenFlame\\ROOT_PATH')) exit;
  */
 class QueryBuilder extends Query
 {
+	/*
+	 * @var flag - Type of query (determined by the first clause)
+	 */
 	protected $type = -1;
+
+	/*
+	 * @var array - Fields to select
+	 */
 	protected $select = array();
+
+	/*
+	 * @var array - Tables that being affect in this query
+	 */
 	protected $tables = array();
 
 	/*
@@ -47,20 +58,12 @@ class QueryBuilder extends Query
 
 	/**
 	 * Start a SELECT statement
-	 * @param $items - Fields to select
+	 * @param mixed - Fields to select
 	 * @return \OpenFlame\Dbal\QueryBuilder - Provides a fluent interface.
 	 */
-	public function select($items)
+	public function select($fields)
 	{
-		if(!is_array($items))
-		{
-			$items = explode(',', $items);
-		}
-
-		foreach($items as $field)
-		{
-			$this->select[] = trim($field);
-		}
+		$this->select = $this->normalizeArray($fields);
 
 		$this->type = static::TYPE_SELECT;
 		return $this;
@@ -73,7 +76,7 @@ class QueryBuilder extends Query
 	 */
 	public function update($tables)
 	{
-		$this->setTables($tables);
+		$this->tables = $this->normalizeArray($tables);
 		$this->type = static::TYPE_UPDATE;
 
 		return $this;
@@ -86,7 +89,7 @@ class QueryBuilder extends Query
 	 */
 	public function insert($table)
 	{
-		$this->setTables($table, true);
+		$this->tables = reset($this->normalizeArray($table));
 		$this->type = static::TYPE_INSERT;
 
 		return $this;
@@ -99,7 +102,7 @@ class QueryBuilder extends Query
 	 */
 	public function delete($tables)
 	{
-		$this->setTables($tables);
+		$this->tables = $this->normalizeArray($tables);
 
 		return $this;
 	}
@@ -111,32 +114,28 @@ class QueryBuilder extends Query
 	 */
 	public function from($tables)
 	{
-		$this->setTables($tables);
+		$this->tables = $this->normalizeArray($tables);
 
 		return $this;
 	}
 
 	/**
-	 * Used to (internally) set the tables being affected in this query 
+	 * Used to (internally) normalize statements to an array
 	 * @param mixed - array or commma separated table(s)
-	 * @param bool - force a single table? 
-	 * @return void
+	 * @return array - Normalized data
 	 */
-	private function setTables($tables, $single = false)
+	protected function normalizeArray($items)
 	{
-		if(!is_array($tables))
+		if(!is_array($items))
 		{
-			$tables = explode(',', $tables);
+			$items = explode(',', $items);
 		}
 
-		foreach($tables as $table)
+		foreach($items as $k => $item)
 		{
-			$this->tables[] = trim($table);
-
-			if($single)
-			{
-				break;
-			}
+			$items[$k] = trim($item);
 		}
+
+		return $items;
 	}
 }
