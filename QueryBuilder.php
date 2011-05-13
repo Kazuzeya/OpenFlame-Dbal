@@ -63,7 +63,7 @@ class QueryBuilder extends Query
 	 */
 	public function select($fields)
 	{
-		$this->select = $this->normalizeArray($fields);
+		$this->select = array_merge($this->select, $this->normalizeArray($fields));
 		$this->type = static::TYPE_SELECT;
 
 		return $this;
@@ -76,7 +76,7 @@ class QueryBuilder extends Query
 	 */
 	public function update($tables)
 	{
-		$this->tables = $this->normalizeArray($tables);
+		$this->tables = array_merge($this->tables, $this->normalizeArray($tables));
 		$this->type = static::TYPE_UPDATE;
 
 		return $this;
@@ -114,7 +114,7 @@ class QueryBuilder extends Query
 	 */
 	public function from($tables)
 	{
-		$this->tables = $this->normalizeArray($tables);
+		$this->tables = array_merge($this->tables, $this->normalizeArray($tables));
 
 		return $this;
 	}
