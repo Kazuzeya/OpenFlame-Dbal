@@ -64,8 +64,8 @@ class QueryBuilder extends Query
 	public function select($fields)
 	{
 		$this->select = $this->normalizeArray($fields);
-
 		$this->type = static::TYPE_SELECT;
+
 		return $this;
 	}
 
@@ -89,7 +89,7 @@ class QueryBuilder extends Query
 	 */
 	public function insert($table)
 	{
-		$this->tables = reset($this->normalizeArray($table));
+		$this->tables = array_slice($this->normalizeArray($table), 0, 1);
 		$this->type = static::TYPE_INSERT;
 
 		return $this;
