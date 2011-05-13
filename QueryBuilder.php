@@ -103,6 +103,7 @@ class QueryBuilder extends Query
 	public function delete($tables)
 	{
 		$this->tables = $this->normalizeArray($tables);
+		$this->type = static::TYPE_DELETE;
 
 		return $this;
 	}
@@ -121,6 +122,7 @@ class QueryBuilder extends Query
 
 	/**
 	 * Used to (internally) normalize statements to an array
+	 * @todo change foreach() to an array_map() implementation
 	 * @param mixed - array or commma separated table(s)
 	 * @return array - Normalized data
 	 */
