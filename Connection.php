@@ -33,7 +33,7 @@ class Connection
 	 * @param int - connection ID (Defaults to first connection)
 	 * @return Connection instance
 	 */
-	public static get($i = 0)
+	public static function get($i = 0)
 	{
 		if(!isset(static::$pdo[$i]))
 		{
@@ -60,10 +60,10 @@ class Connection
 	 *
 	 * @return mixed - int on success, boolean false on failure 
 	 */
-	public static connect()
+	public static function connect()
 	{
 		$args = func_get_args();
-		$i = sizeof($pdo);
+		$i = sizeof(static::$pdo);
 
 		// Shortcut method
 		if($args[0] instanceof PDO)
@@ -86,7 +86,7 @@ class Connection
 
 		try 
 		{
-			static::$pdo[$i] = new PDO($dsn, $username, $password, $options);
+			static::$pdo[$i] = new \PDO($dsn, $username, $password, $options);
 		}
 		catch(PDOException $e)
 		{

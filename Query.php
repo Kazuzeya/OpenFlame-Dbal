@@ -23,4 +23,25 @@ if(!defined('OpenFlame\\ROOT_PATH')) exit;
  */
 class Query
 {
+	private $pdo; 
+
+	public static function getInstance($id = 0)
+	{
+		return new static($id);
+	}
+
+	public function __construct($id = 0)
+	{
+		$this->pdo = \OpenFlame\Dbal\Connection::get($id);
+	}
+
+	public function sql($sql)
+	{
+		return $this;
+	}
+
+	public function exec()
+	{
+		return $this;
+	}
 }
