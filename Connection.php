@@ -24,76 +24,108 @@ if(!defined('OpenFlame\\ROOT_PATH')) exit;
 class Connection
 {
 	/*
-	 * @var Instance of PDO
+	 * @var static instances of this class
 	 */
-	protected static $pdo = array();
+	private static $connections = array();
 
 	/*
-	 * Statically get the PDO instance
-	 * @param int - connection ID (Defaults to first connection)
-	 * @return Connection instance
+	 * @var instance of PDO
 	 */
-	public static function get($i = 0)
+	private $pdo = null;
+
+	/*
+	 * Default connection name
+	 */
+	const DEFAULT_CON_NAME = 'default';
+
+	/*
+	 * Static constructor
+	 * @param string $name - Name of the connection, or empty if using the default 
+	 * @return \OpenFlame\Dbal\Connection - Specific instance of this class specified by the $name param  
+	 */
+	public static function newInstance($name = '')
 	{
-		if(!isset(static::$pdo[$i]))
+		$name = empty($name) ? static::DEFAULT_CON_NAME : '_' . (string) $name;
+
+		if (isset(static::$connections[$name]))
 		{
-			// @todo
-			//throw new Exception();
+			throw new \LogicException('Cannot overwrite existing database connection');
 		}
 
-		return static::$pdo[$i];
+		static::$connections[$name] = new static();
+		return static::$connections[$name];
 	}
 
 	/*
-	 * Connect to a database
-	 *
-	 * OPTION 1:
-	 ***************************
-	 * @param PDO instance
-	 *
-	 * OPTION 2:
-	 ***************************
-	 * @param string - DSN connection string 
-	 * @param string - Database username
-	 * @param string - Database password
-	 * @param array - DBMS specific options
-	 *
-	 * @return mixed - int on success, boolean false on failure 
+	 * Get the object or creates a new object if needed
+	 * @param string $name - Name of the connection, or empty if using the default
 	 */
-	public static function connect()
+	public static function getInstance($name = '')
+	{
+		$name = empty($name) ? static::DEFAULT_CON_NAME : '_' . (string) $name;
+
+		return isset(static::$connections[$name]) ? static::$connections[$name] : static::newInstance($name);
+	}
+
+	/*
+	 */
+	public function connect()
 	{
 		$args = func_get_args();
-		$i = sizeof(static::$pdo);
 
-		// Shortcut method
-		if(func_num_args() == 1 && $args[0] instanceof PDO)
+		if($args[0] instanceof \PDO)
 		{
-			static::$pdo[$i] = $args[0];
-			return $i; 
+			$this->pdo = $args[0];
+		}
+		else if(isset($args[0]))
+		{
+			$dsn = (string) $args[0];
+			$user = isset($args[1]) ? (string) $args[1] : '';
+			$pass = isset($args[2]) ? (string) $args[2] : '';
+			$options = isset($args[3]) ? (array) $args[3] : array();
+
+			try
+			{
+				$this->pdo = new \PDO($dsn, $user, $pass, $options);
+			}
+			catch (PDOException $e)
+			{
+				throw new \RuntimeException($e->getMessage());
+			}
+		}
+		else
+		{
+			throw new \LogicException('Connection::connect() was not given correct parameters');
+		}
+	}
+
+	/*
+	 * Get the PDO instance
+	 * @return - Instance of \PDO
+	 * @throws \RuntimeException
+	 */
+	public function get()
+	{
+		if ($this->pdo == null)
+		{
+			throw new \RuntimeException('Could not get PDO object from \OpenFlame\Dbal\Connection, object was NULL');
 		}
 
-		if(empty($args[0]))
+		return $this->pdo;
+	}
+
+	/*
+	 * Close the connection
+	 * @param string $name - Name of the connection, or empty if using the default
+	 * @throws \RuntimeException()
+	 */
+	public function close()
+	{
+		if ($this->pdo == null)
 		{
-			// @todo
-			//throw new Exception();
+			throw new \RuntimeException('Could not close database connection, object was NULL already');
 		}
 
-		// If argument 1 is not an instance of PDO, we're connecting normally
-		$dsn		= $args[0];
-		$username	= isset($args[1]) ? $args[1] : '';
-		$password	= isset($args[2]) ? $args[2] : '';
-		$options	= isset($args[3]) && is_array($args[3]) ? $args[3] : array();
-
-		try 
-		{
-			static::$pdo[$i] = new \PDO($dsn, $username, $password, $options);
-		}
-		catch(PDOException $e)
-		{
-			// @todo
-			return false; 
-		}
-
-		return $i; 
+		$this->pdo = null;
 	}
 }
