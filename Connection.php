@@ -43,16 +43,15 @@ class Connection
 	 * @param string $name - Name of the connection, or empty if using the default 
 	 * @return \OpenFlame\Dbal\Connection - Specific instance of this class specified by the $name param  
 	 */
-	public static function newInstance($name = '')
+	public static function getInstance($name = '')
 	{
 		$name = empty($name) ? static::DEFAULT_CON_NAME : '_' . (string) $name;
 
-		if (isset(static::$connections[$name]))
+		if (!isset(static::$connections[$name]))
 		{
-			throw new \LogicException('Cannot overwrite existing database connection');
+			static::$connections[$name] = new static();
 		}
 
-		static::$connections[$name] = new static();
 		return static::$connections[$name];
 	}
 
@@ -60,12 +59,11 @@ class Connection
 	 * Get the object or creates a new object if needed
 	 * @param string $name - Name of the connection, or empty if using the default
 	 */
-	public static function getInstance($name = '')
+/*	public static function getInstance($name = '')
 	{
 		$name = empty($name) ? static::DEFAULT_CON_NAME : '_' . (string) $name;
-
 		return isset(static::$connections[$name]) ? static::$connections[$name] : static::newInstance($name);
-	}
+	}*/
 
 	/*
 	 */

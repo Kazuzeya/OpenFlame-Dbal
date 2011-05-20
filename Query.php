@@ -59,8 +59,6 @@ class Query
 	 */
 	public function __construct($name = '')
 	{
-		$name = empty($name) ? \OpenFlame\Dbal\Connection::DEFAULT_CON_NAME : (string) $name;
-
 		$this->pdo = \OpenFlame\Dbal\Connection::getInstance($name)->get();
 	}
 
@@ -91,10 +89,13 @@ class Query
 	/**
 	 * Query and fetch a row 
 	 * @note - Safe for itteration
-	 * @return array - Associative array of the row being fetched
+	 * @return array - The result being fetched
 	 */
 	public function fetchRow()
 	{
+		$this->_query();
+
+		return $this->stmt->fetch(\PDO::FETCH_ASSOC & \PDO::FETCH_LAZY);
 	}
 
 	/**
@@ -103,7 +104,10 @@ class Query
 	 */
 	public function fetchRowset()
 	{
-	}
+		$this->_query();
+
+		return $this->stmt->fetchAll(\PDO::FETCH_COLUMN & \PDO::FETCH_GROUP);
+	} 
 
 	/**
 	 * Excecute a query
@@ -111,5 +115,24 @@ class Query
 	 */
 	public function exec()
 	{
+		$this->_query();
+
+		return $this->stmt->rowCount();
+	}
+
+	/*
+	 * Excecute a query (internally)
+	 */
+	private function _query()
+	{
+		static $queryRan = false;
+
+		if (!$queryRan)
+		{
+			$this->stmt = $this->pdo->prepare($this->sql);
+			$this->stmt->execute($this->params);
+			
+			$queryRan = true;
+		}
 	}
 }
