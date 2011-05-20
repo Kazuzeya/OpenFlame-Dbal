@@ -56,16 +56,7 @@ class Connection
 	}
 
 	/*
-	 * Get the object or creates a new object if needed
-	 * @param string $name - Name of the connection, or empty if using the default
-	 */
-/*	public static function getInstance($name = '')
-	{
-		$name = empty($name) ? static::DEFAULT_CON_NAME : '_' . (string) $name;
-		return isset(static::$connections[$name]) ? static::$connections[$name] : static::newInstance($name);
-	}*/
-
-	/*
+	 * Connect
 	 */
 	public function connect()
 	{
