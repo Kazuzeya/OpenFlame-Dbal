@@ -107,7 +107,7 @@ class Query
 		$this->_query();
 
 		return $this->stmt->fetchAll(\PDO::FETCH_COLUMN & \PDO::FETCH_GROUP);
-	} 
+	}
 
 	/**
 	 * Excecute a query
@@ -131,7 +131,7 @@ class Query
 		{
 			$this->stmt = $this->pdo->prepare($this->sql);
 			$this->stmt->execute($this->params);
-			
+
 			$queryRan = true;
 		}
 	}
