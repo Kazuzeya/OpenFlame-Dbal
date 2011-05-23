@@ -31,7 +31,7 @@ class Query
 	/*
 	 * @var PDO Statement
 	 */
-	private $stmt;
+	protected $stmt;
 
 	/*
 	 * @var SQL to be ran
@@ -123,12 +123,14 @@ class Query
 	/*
 	 * Excecute a query (internally)
 	 */
-	protected function _query()
+	protected function _query($hard = false)
 	{
 		static $queryRan = false;
 
-		if (!$queryRan)
+		if (!$queryRan || $hard)
 		{
+			$this->stmt = null;
+
 			$this->stmt = $this->pdo->prepare($this->sql);
 			$this->stmt->execute($this->params);
 

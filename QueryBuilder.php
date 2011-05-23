@@ -358,11 +358,18 @@ class QueryBuilder extends Query
 		if(!$count && $this->type == static::TYPE_UPSERT)
 		{
 			// build insert from update
-			$sql = 'INSERT INTO ' . (string) $this->tables . "\n";
+			$table = is_array($this->tables) ? array_shift($this->tables) : (string) $this->tables;
+
+			$sql = 'INSERT INTO ' . $table . "\n";
 			$sql .= '(' . implode(',', array_keys($this->sets)) . ")\n";
 
 			$qs = array_fill(0,sizeof($this->sets),'?');
 			$sql .= 'VALUES (' . implode(',', $qs) . ')';
+
+			$this->sql($sql);
+			$this->setParams(array_values($this->sets));
+			$this->_query(true);
+			$count = $this->stmt->rowCount();
 		}
 
 		return $count;
