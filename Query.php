@@ -11,7 +11,7 @@
 
 namespace OpenFlame\Dbal;
 
-if(!defined('OpenFlame\\ROOT_PATH')) exit;
+if (!defined('OpenFlame\\ROOT_PATH')) exit;
 
 /**
  * OpenFlame Dbal - Query
@@ -123,7 +123,7 @@ class Query
 	/*
 	 * Excecute a query (internally)
 	 */
-	private function _query()
+	protected function _query()
 	{
 		static $queryRan = false;
 

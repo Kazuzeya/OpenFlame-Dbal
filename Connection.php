@@ -11,7 +11,7 @@
 
 namespace OpenFlame\Dbal;
 
-if(!defined('OpenFlame\\ROOT_PATH')) exit;
+if (!defined('OpenFlame\\ROOT_PATH')) exit;
 
 /**
  * OpenFlame Dbal - Connection
@@ -62,11 +62,11 @@ class Connection
 	{
 		$args = func_get_args();
 
-		if($args[0] instanceof \PDO)
+		if ($args[0] instanceof \PDO)
 		{
 			$this->pdo = $args[0];
 		}
-		else if(isset($args[0]))
+		else if (isset($args[0]))
 		{
 			$dsn = (string) $args[0];
 			$user = isset($args[1]) ? (string) $args[1] : '';
