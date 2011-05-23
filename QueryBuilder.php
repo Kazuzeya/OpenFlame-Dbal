@@ -201,34 +201,46 @@ class QueryBuilder extends Query
 
 	/*
 	 * WHERE clause
+	 * @param string $statement - PDO style prepared statement
+	 * @param mixed ... - Addtional params to be placed in the placeholders of the PDO statement
 	 * @return \OpenFlame\Dbal\QueryBuilder - Provides an fluent interface
 	 */
-	public function where($statement, $val = null)
+	public function where()
 	{
-		$this->wheres[] = array('WHERE', $statement, $val);
+		$args = func_get_args();
+		$statement = array_shift($args);
 
+		$this->wheres[] = array('WHERE', $statement, $args);
 		return $this;
 	}
 
 	/*
-	 * WHERE clause
+	 * AND clause
+	 * @param string $statement - PDO style prepared statement
+	 * @param mixed ... - Addtional params to be placed in the placeholders of the PDO statement
 	 * @return \OpenFlame\Dbal\QueryBuilder - Provides an fluent interface
 	 */
-	public function andWhere($statement, $val = null)
+	public function andWhere()
 	{
-		$this->wheres[] = array('AND', $statement, $val);
+		$args = func_get_args();
+		$statement = array_shift($args);
 
+		$this->wheres[] = array('AND', $statement, $args);
 		return $this;
 	}
 
 	/*
-	 * WHERE clause
+	 * OR clause
+	 * @param string $statement - PDO style prepared statement
+	 * @param mixed ... - Addtional params to be placed in the placeholders of the PDO statement
 	 * @return \OpenFlame\Dbal\QueryBuilder - Provides an fluent interface
 	 */
-	public function orWhere($statement, $val)
+	public function orWhere()
 	{
-		$this->wheres[] = array('OR', $statement, $val = null);
+		$args = func_get_args();
+		$statement = array_shift($args);
 
+		$this->wheres[] = array('OR', $statement, $args);
 		return $this;
 	}
 
@@ -320,9 +332,9 @@ class QueryBuilder extends Query
 			{
 				$sql .= $val[0] . ' ' . $val[1] . "\n";
 
-				if(isset($val[2]) && !is_null($val[2]) && strpos($val[1], '?'))
+				if(isset($val[2]) && is_array($val[2]) && strpos($val[1], '?'))
 				{
-					$params[] = $val[2];
+					$params = array_merge($params, $val[2]);
 				}
 			}
 		}
