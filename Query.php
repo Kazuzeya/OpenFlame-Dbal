@@ -95,7 +95,7 @@ class Query
 	{
 		$this->_query();
 
-		return $this->stmt->fetch(\PDO::FETCH_ASSOC & \PDO::FETCH_LAZY);
+		return $this->stmt->fetch(\PDO::FETCH_ASSOC);
 	}
 
 	/**
@@ -106,7 +106,7 @@ class Query
 	{
 		$this->_query();
 
-		return $this->stmt->fetchAll(\PDO::FETCH_COLUMN & \PDO::FETCH_GROUP);
+		return $this->stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
 	/**
