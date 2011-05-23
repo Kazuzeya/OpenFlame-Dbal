@@ -356,8 +356,6 @@ class QueryBuilder extends Query
 		return $count;
 	}
 
-	public function getSql(){return $this->sql;}public function getParams(){return $this->params;}
-
 	/**
 	 * Used to (internally) normalize statements to an array
 	 * @todo change foreach() to an array_map() implementation
