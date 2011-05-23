@@ -23,4 +23,6 @@ if(!defined('OpenFlame\\ROOT_PATH')) exit;
  */
 interface FormatInterface
 {
+	public function encode($data);
+	public function decode($data);
 }
