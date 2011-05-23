@@ -6,6 +6,6 @@ This simple, yet powerful Database abstraction layer sites a top of PHP's PDO fu
 
 **License**: *MIT License* - <http://opensource.org/licenses/mit-license.php>
 
-**Copyright**: (c) 2010 - 2011 -- OpenFlameCMS.com
+**Copyright**: (c) 2010 - 2011 -- openflame-project.org
 
 This library generously provided for free by the OpenFlame CMS Development Team.

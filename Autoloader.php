@@ -2,7 +2,7 @@
 /**
  *
  * @package     OpenFlame Dbal
- * @copyright   (c) 2010 OpenFlameCMS.com
+ * @copyright   (c) 2010 openflame-project.org
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
  * @link        https://github.com/OpenFlame/OpenFlame-Dbal
  *
