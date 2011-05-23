@@ -121,7 +121,18 @@ class Query
 	}
 
 	/*
+	 * Get the last insert id
+	 * @return string - Insert ID
+	 */
+	public function insertId()
+	{
+		return $this->pdo->lastInsertId();
+	}
+
+	/*
 	 * Excecute a query (internally)
+	 * @param bool $hard - Run it even if a query has been ran for this instance.
+	 * @throws \LogicException
 	 */
 	protected function _query($hard = false)
 	{
@@ -129,12 +140,17 @@ class Query
 
 		if (!$queryRan || $hard)
 		{
-			$this->stmt = null;
-
 			$this->stmt = $this->pdo->prepare($this->sql);
 			$this->stmt->execute($this->params);
 
 			$queryRan = true;
+
+			list($e, $c, $m) = $this->stmt->errorInfo();
+
+			if ($c || strlen($m))
+			{
+				throw new \LogicException("SQL Error: {$e}, Code: {$c}. {$m}");
+			}
 		}
 	}
 }
