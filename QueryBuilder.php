@@ -49,6 +49,11 @@ class QueryBuilder extends Query
 	protected $rows = array();
 
 	/*
+	 * @var array - Complex array for wheres
+	 */
+	protected $wheres = array();
+
+	/*
 	 * consts - Query types
 	 */
 	const TYPE_SELECT = 0;
@@ -57,16 +62,6 @@ class QueryBuilder extends Query
 	const TYPE_MULTII = 3;
 	const TYPE_DELETE = 4;
 	const TYPE_UPSERT = 5;
-
-	/*
-	 * Statically get an instance
-	 * @param string $name - Connection name
-	 * @return new \OpenFlame\Dbal\Query
-	 */
-/*	public static function getInstance($name = '')
-	{
-		return new static($name);
-	}*/
 
 	/*
 	 * Normal constructor
@@ -204,16 +199,37 @@ class QueryBuilder extends Query
 		return $this;
 	}
 
-	public function where()
+	/*
+	 * WHERE clause
+	 * @return \OpenFlame\Dbal\QueryBuilder - Provides an fluent interface
+	 */
+	public function where($statement, $val = null)
 	{
+		$this->wheres[] = array('WHERE', $statement, $val);
+
+		return $this;
 	}
 
-	public function andWhere()
+	/*
+	 * WHERE clause
+	 * @return \OpenFlame\Dbal\QueryBuilder - Provides an fluent interface
+	 */
+	public function andWhere($statement, $val = null)
 	{
+		$this->wheres[] = array('AND', $statement, $val);
+
+		return $this;
 	}
 
-	public function orWhere()
+	/*
+	 * WHERE clause
+	 * @return \OpenFlame\Dbal\QueryBuilder - Provides an fluent interface
+	 */
+	public function orWhere($statement, $val)
 	{
+		$this->wheres[] = array('OR', $statement, $val = null);
+
+		return $this;
 	}
 
 	/*
@@ -226,18 +242,20 @@ class QueryBuilder extends Query
 		$sql = '';
 		$params = array();
 
-		$sets = $insert = false;
+		$sets = $insert = $where = false;
 
 		switch($this->type)
 		{
 			case static::TYPE_SELECT:
 				$sql .= 'SELECT ' . implode(',', $this->select) . "\nFROM ";
+				$where = true;
 			break;
 
 			case static::TYPE_UPSERT:	
 			case static::TYPE_UPDATE:
 				$sql .= 'UPDATE ';
 				$sets = true;
+				$where = true;
 			break;
 
 			case static::TYPE_MULTII:
@@ -248,6 +266,7 @@ class QueryBuilder extends Query
 
 			case static::TYPE_DELETE:
 				$sql .= 'DELETE FROM ';
+				$where = true;
 			break;;
 		}
 
@@ -295,7 +314,18 @@ class QueryBuilder extends Query
 		}
 
 		// Where
-		
+		if ($where && sizeof($this->wheres))
+		{
+			foreach($this->wheres as $key => $val)
+			{
+				$sql .= $val[0] . ' ' . $val[1] . "\n";
+
+				if(isset($val[2]) && !is_null($val[2]) && strpos($val[1], '?'))
+				{
+					$params[] = $val[2];
+				}
+			}
+		}
 
 		$this->sql($sql);
 		$this->setParams($params);
