@@ -25,7 +25,7 @@ class Php implements FormatInterface
 {
 	/*
 	 */
-	const EXT = 'php';
+	const EXT = 'csv';
 
 	/*
 	 * Encode to a format
