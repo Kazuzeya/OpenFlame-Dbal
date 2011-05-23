@@ -9,7 +9,7 @@
  * Minimum Requirement: PHP 5.3.0
  */
 
-namespace OpenFlame\Dbal\Formats\Types;
+namespace OpenFlame\Dbal\Format\Types;
 
 if(!defined('OpenFlame\\ROOT_PATH')) exit;
 
