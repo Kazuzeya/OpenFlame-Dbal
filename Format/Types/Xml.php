@@ -35,7 +35,7 @@ class Xml implements FormatInterface
 	 */
 	public function encode($data)
 	{
-		$xml = new SimpleXMLElement("<data></data>");
+		$xml = new \SimpleXMLElement("<data></data>");
 
 		foreach($data as $row)
 		{
@@ -58,7 +58,7 @@ class Xml implements FormatInterface
 	 */
 	public function decode($data)
 	{
-		$xml = new SimpleXMLElement($data);
+		$xml = new \SimpleXMLElement($data);
 
 		$result = array();
 		foreach($xml as $row)
