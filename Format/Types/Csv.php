@@ -14,22 +14,28 @@ namespace OpenFlame\Dbal\Formats\Types;
 if(!defined('OpenFlame\\ROOT_PATH')) exit;
 
 /**
- * OpenFlame Dbal - Formats
- * 	     Provides infrastructure for data to be read and written to different formats
+ * OpenFlame Dbal - Format CSV
+ * 	     Encodes/Decodes the array into and out of a CSV format
  *
  *
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
  * @link        https://github.com/OpenFlame/OpenFlame-Dbal
  */
-interface FormatInterface
+class Php implements FormatInterface
 {
+	/*
+	 */
+	const EXT = 'php';
+
 	/*
 	 * Encode to a format
 	 * @param array $data - 2D array to be encoded
 	 * @return string - Formated string for file output
 	 * @throws /LogicException - (Potentially)
 	 */
-	public function encode($data);
+	public function encode($data)
+	{
+	}
 
 	/*
 	 * Decode to an array
@@ -37,11 +43,16 @@ interface FormatInterface
 	 * @return array - 2D array
 	 * @throws /LogicException - (Potentially)
 	 */
-	public function decode($data);
+	public function decode($data)
+	{
+	}
 
 	/*
 	 * Get the file extention
 	 * @return string - File extention (without the dot)
 	 */
-	public function getExt();
+	public function getExt()
+	{
+		return self::EXT;
+	}
 }
