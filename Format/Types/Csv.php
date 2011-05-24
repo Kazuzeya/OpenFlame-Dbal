@@ -21,7 +21,7 @@ if(!defined('OpenFlame\\ROOT_PATH')) exit;
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
  * @link        https://github.com/OpenFlame/OpenFlame-Dbal
  */
-class Php implements FormatInterface
+class Csv implements FormatInterface
 {
 	/*
 	 */
@@ -35,6 +35,28 @@ class Php implements FormatInterface
 	 */
 	public function encode($data)
 	{
+		$buffer = '';
+
+		foreach(array_keys($data[0]) as $col)
+		{
+			$buffer .= '"' . $col . '",';
+		}
+
+		$buffer = substr($buffer, 0, strlen($buffer) - 1);
+		$buffer .= "\n";
+	
+		foreach($data as $row)
+		{
+			foreach($row as $item)
+			{
+				$buffer .= '"' . addslashes($item) . '",';
+			}
+
+			$buffer = substr($buffer, 0, strlen($buffer) - 1);
+			$buffer .= "\n";
+		}
+
+		return $buffer;
 	}
 
 	/*
@@ -45,6 +67,32 @@ class Php implements FormatInterface
 	 */
 	public function decode($data)
 	{
+		$pieces = explode("\n", $data);
+		$cols = explode('","', array_shift($pieces));
+		$itemcount = sizeof($cols);
+		$cols[0] = substr($cols[0], 1, strlen($cols[0]));
+		$cols[$itemcount-1] = substr($cols[$itemcount-1], 0, strlen($cols[$itemcount-1]) - 1);
+
+		$buffer = array();
+
+		foreach($pieces as $index => $row)
+		{
+			if(!strlen($row))
+			{
+				break;
+			}
+	
+			$rowAry = explode('","', $row);
+			$rowAry[0] = substr($rowAry[0], 1, strlen($rowAry[0]));
+			$rowAry[$itemcount-1] = substr($rowAry[$itemcount-1], 0, strlen($rowAry[$itemcount-1]) - 1);
+
+			for($i = 0; $i < $itemcount; $i++)
+			{
+				$buffer[$index][$cols[$i]] = stripslashes($rowAry[$i]);
+			}
+		}
+
+		return $buffer;
 	}
 
 	/*
