@@ -34,6 +34,11 @@ class Connection
 	private $pdo = null;
 
 	/*
+	 * @var dmbs type
+	 */
+	private $type = '';
+
+	/*
 	 * Default connection name
 	 */
 	const DEFAULT_CON_NAME = 'default';
@@ -86,11 +91,48 @@ class Connection
 			{
 				throw new \RuntimeException($e->getMessage());
 			}
+
+			$type = reset(explode(':', $dsn));
+
+			// sysbase and dblib are both used by MSSQL
+			if (!in_array($type, array('mysql', 'pgsql', 'sybase', 'dblib', 'sqlite', 'oci')))
+			{
+				throw new \LogicException("Unsupported PDO driver");
+			}
+
+			$this->type = $type;
 		}
 		else
 		{
 			throw new \LogicException('\OpenFlame\Dbal\Connection::connect() was not given correct parameters');
 		}
+	}
+
+	/*
+	 * Set the database management system type 
+	 * This should ONLY be used if you created this connection via an instnace of PDO.
+	 * @param string $dbms - The database manage system string:
+	 * 	mysql, mysqli, sqlite, pgsql, oracle, mssql
+	 */
+	public function setDbms($type)
+	{
+		// sysbase and dblib are both used by MSSQL
+		if (!in_array($type, array('mysql', 'pgsql', 'sybase', 'dblib', 'sqlite', 'oci')))
+		{
+			throw new \LogicException("Unsupported PDO driver");
+		}
+
+		$this->type = $type;
+	}
+
+	/*
+	 * Get the database management system type
+	 * @return string - The database manage system string:
+	 * 	mysql, mysqli, sqlite, pgsql, oracle, mssql
+	 */
+	public function getDbms()
+	{
+		return $this->type;
 	}
 
 	/*
