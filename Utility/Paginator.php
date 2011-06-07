@@ -34,6 +34,16 @@ class Paginator
 	protected $pageNumber = 0;
 
 	/*
+	 * @var total pages
+	 */
+	protected $totalPages = 0;
+
+	/*
+	 * @var total records
+	 */
+	protected $totalRecords = 0;
+
+	/*
 	 * Get instance
 	 */
 	public static function getInstance()
@@ -90,19 +100,34 @@ class Paginator
 	{
 	}
 
+	/*
+	 * Get the current page number
+	 * @return int - page number
+	 */
 	public function getCurrentPage()
 	{
 		return $this->pageNumber;
 	}
 
+	/*
+	 * Get the total page count
+	 * @return int - page count
+	 */
 	public function getTotalPages()
 	{
 	}
 
+	/*
+	 * Get the total record count
+	 * @return int - record count
+	 */
 	public function getTotalRecords()
 	{
 	}
 
+	/*
+	 * Do the actuall query
+	 */
 	private function _query()
 	{
 	}
