@@ -65,6 +65,7 @@ class Connection
 		if ($args[0] instanceof \PDO)
 		{
 			$this->pdo = $args[0];
+			$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		}
 		else if (isset($args[0]))
 		{
@@ -73,18 +74,22 @@ class Connection
 			$pass = isset($args[2]) ? (string) $args[2] : '';
 			$options = isset($args[3]) ? (array) $args[3] : array();
 
+			// Doing this before the connection, otherwise it will sit there 
+			// and hang if we have bad login details.
+			$options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
+
 			try
 			{
 				$this->pdo = new \PDO($dsn, $user, $pass, $options);
 			}
-			catch (PDOException $e)
+			catch (\PDOException $e)
 			{
 				throw new \RuntimeException($e->getMessage());
 			}
 		}
 		else
 		{
-			throw new \LogicException('Connection::connect() was not given correct parameters');
+			throw new \LogicException('\OpenFlame\Dbal\Connection::connect() was not given correct parameters');
 		}
 	}
 

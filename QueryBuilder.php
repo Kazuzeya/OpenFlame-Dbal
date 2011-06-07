@@ -176,7 +176,7 @@ class QueryBuilder extends Query
 			case static::TYPE_MULTII:
 				if(!is_array($args[0]))
 				{
-					throw new LogicException("Argument to QueryBuilder::set() must be an array when Multi-INSERTing.");
+					throw new \LogicException("Argument to QueryBuilder::set() must be an array when Multi-INSERTing.");
 				}
 
 				$this->rows[] = $args[0];
@@ -185,7 +185,7 @@ class QueryBuilder extends Query
 			case static::TYPE_INSERT:
 				if(!is_array($args[0]))
 				{
-					throw new LogicException("Argument to QueryBuilder::set() must be an array when INSERTing.");
+					throw new \LogicException("Argument to QueryBuilder::set() must be an array when INSERTing.");
 				}
 
 				$this->rows[0] = $args[0];

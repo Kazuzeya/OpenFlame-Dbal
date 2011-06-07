@@ -44,6 +44,11 @@ class Query
 	protected $params = array();
 
 	/*
+	 * @var has the query been ran yet?
+	 */
+	private $queryRan = false;
+
+	/*
 	 * Statically get an instance
 	 * @param string $name - Connection name
 	 * @return new \OpenFlame\Dbal\Query
@@ -136,14 +141,18 @@ class Query
 	 */
 	protected function _query($hard = false)
 	{
-		static $queryRan = false;
-
-		if (!$queryRan || $hard)
+		if (!$this->queryRan || $hard)
 		{
 			$this->stmt = $this->pdo->prepare($this->sql);
+			
+			if (!$this->stmt)
+			{
+				throw new \LogicException("SQL Error: {$e}, Code: {$c}. {$m}");
+			}
+			
 			$this->stmt->execute($this->params);
 
-			$queryRan = true;
+			$this->queryRan = true;
 
 			list($e, $c, $m) = $this->stmt->errorInfo();
 
