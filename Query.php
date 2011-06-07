@@ -137,19 +137,13 @@ class Query
 	/*
 	 * Excecute a query (internally)
 	 * @param bool $hard - Run it even if a query has been ran for this instance.
-	 * @throws \LogicException
+	 * @throws \PDOException, \LogicException
 	 */
 	protected function _query($hard = false)
 	{
 		if (!$this->queryRan || $hard)
 		{
 			$this->stmt = $this->pdo->prepare($this->sql);
-			
-			if (!$this->stmt)
-			{
-				throw new \LogicException("SQL Error: {$e}, Code: {$c}. {$m}");
-			}
-			
 			$this->stmt->execute($this->params);
 
 			$this->queryRan = true;
