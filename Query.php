@@ -49,11 +49,11 @@ class Query
 	private $queryRan = false;
 
 	/*
-	 * Statically get an instance
+	 * Statically create an instance
 	 * @param string $name - Connection name
 	 * @return new \OpenFlame\Dbal\Query
 	 */
-	public static function getInstance($name = '')
+	public static function newInstance($name = '')
 	{
 		return new static($name);
 	}
