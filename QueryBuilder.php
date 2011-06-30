@@ -44,6 +44,11 @@ class QueryBuilder extends Query
 	protected $sets = array();
 
 	/*
+	 * @var array - Raw sets
+	 */
+	protected $rawSets = array();
+
+	/*
 	 * @var array - Rows for insert
 	 */
 	protected $rows = array();
@@ -200,6 +205,32 @@ class QueryBuilder extends Query
 	}
 
 	/*
+	 * Increment field value
+	 * Hackaround for set(), we can't really use it to add/subtract values from the fields
+	 * @param string $field - Name of the field
+	 * @param int $ammount - Can be any signed integer, defaults to 1
+	 * @return \OpenFlame\Dbal\QueryBuilder - Provides a fluent interface.
+	 */
+	public function increment($field, $ammount = 1)
+	{
+		$this->rawSets[$field] = $field . ' + ' . (int) $ammount;
+
+		return $this;
+	}
+
+	/*
+	 * Decrement field value
+	 * Shortcut for increment()
+	 * @param string $field - Name of the field
+	 * @param int $ammount - Can be any signed integer, defaults to 1
+	 * @return \OpenFlame\Dbal\QueryBuilder - Provides a fluent interface.
+	 */
+	public function decrement($field, $ammount = -1)
+	{
+		return $this->increment($field, $ammount);
+	}
+
+	/*
 	 * WHERE clause
 	 * @param string $statement - PDO style prepared statement
 	 * @param mixed ... - Addtional params to be placed in the placeholders of the PDO statement
@@ -305,8 +336,8 @@ class QueryBuilder extends Query
 			$sql .= 'VALUES (' . implode("),\n(", $_rows) . ')';
 		}
 
-		// Sets
-		if ($sets && sizeof($this->sets))
+		// Sets and raw sets
+		if ($sets && (sizeof($this->sets) || sizeof($this->rawSets)))
 		{
 			$temp = array();
 
@@ -319,6 +350,11 @@ class QueryBuilder extends Query
 
 				$temp[] = $col . ' = ?';
 				$params[] = $val;
+			}
+
+			foreach($this->rawSets as $col => $val)
+			{
+				$temp[] = $col . ' = ' . $val;
 			}
 
 			$sql .= 'SET ' . implode(',', $temp) . "\n";
