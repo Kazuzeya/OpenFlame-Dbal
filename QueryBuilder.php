@@ -261,7 +261,7 @@ class QueryBuilder extends Query
 	 * @param int $amount - Can be any signed integer, defaults to 1
 	 * @return \OpenFlame\Dbal\QueryBuilder - Provides a fluent interface.
 	 */
-	public function increment($field, $amount, = 1)
+	public function increment($field, $amount = 1)
 	{
 		$this->rawSets[$field] = $field . ' + ' . (int) $amount;
 
@@ -474,6 +474,21 @@ class QueryBuilder extends Query
 		}
 
 		return $count;
+	}
+
+	/*
+	 * Excecute a query (internally) Override of Query::_query()
+	 * @param bool $hard - Run it even if a query has been ran for this instance.
+	 * @throws \PDOException, \LogicException
+	 */
+	protected function _query($hard = false)
+	{
+		if (!$this->queryRan || $hard)
+		{
+			$this->build();
+
+			parent::_query(true);
+		}
 	}
 
 	/**

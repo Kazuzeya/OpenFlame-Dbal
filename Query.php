@@ -46,7 +46,7 @@ class Query
 	/*
 	 * @var has the query been ran yet?
 	 */
-	private $queryRan = false;
+	protected $queryRan = false;
 
 	/*
 	 * Statically create an instance
