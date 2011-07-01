@@ -59,6 +59,18 @@ class QueryBuilder extends Query
 	protected $wheres = array();
 
 	/*
+	 * Limits and offsets
+	 */
+	protected $limit = 0;
+	protected $offset = 0;
+
+	/*
+	 * @var string - Fields to order by
+	 */
+	protected $orderBy = '';
+	protected $orderDirection = '';
+
+	/*
 	 * consts - Query types
 	 */
 	const TYPE_SELECT = 0;
@@ -200,6 +212,44 @@ class QueryBuilder extends Query
 				$this->sets = array_merge($this->sets, $this->inputKeyVals($args));
 			break;
 		}
+
+		return $this;
+	}
+
+	/*
+	 * Limit
+	 * @param int $limit
+	 * @return \OpenFlame\Dbal\QueryBuilder - Provides a fluent interface.
+	 */
+	public function limit($limit)
+	{
+		$this->limit = (int) $limit;
+
+		return $this;
+	}
+
+	/*
+	 * Offset
+	 * @param int $offset
+	 * @return \OpenFlame\Dbal\QueryBuilder - Provides a fluent interface.
+	 */
+	public function offset($offset)
+	{
+		$this->offset = (int) $offset;
+
+		return $this;
+	}
+
+	/*
+	 * Order by
+	 * @param string $fields - Comma separated list of fields to order by
+	 * @param string $direction - ASC or DESC
+	 * @return \OpenFlame\Dbal\QueryBuilder - Provides a fluent interface.
+	 */
+	public function orderBy($fields, $direction)
+	{
+		$this->orderBy = (string) $orderBy;
+		$this->orderDirection = (strtoupper($direction) == 'ASC') ? 'ASC' : 'DESC';
 
 		return $this;
 	}
@@ -373,6 +423,21 @@ class QueryBuilder extends Query
 					$params = array_merge($params, $val[2]);
 				}
 			}
+		}
+
+		if ($this->limit > 0)
+		{
+			$sql .= "LIMIT {$this->limit}\n";
+		}
+
+		if ($this->offset > 0)
+		{
+			$sql .= "OFFSET {$this->limit}\n";
+		}
+
+		if (strlen($this->orderBy))
+		{
+			$sql .= "ORDER BY {$this->orderBy} {$this->orderDirection}\n";
 		}
 
 		$this->sql($sql);
