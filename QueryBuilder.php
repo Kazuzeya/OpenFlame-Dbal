@@ -258,12 +258,12 @@ class QueryBuilder extends Query
 	 * Increment field value
 	 * Hackaround for set(), we can't really use it to add/subtract values from the fields
 	 * @param string $field - Name of the field
-	 * @param int $ammount - Can be any signed integer, defaults to 1
+	 * @param int $amount - Can be any signed integer, defaults to 1
 	 * @return \OpenFlame\Dbal\QueryBuilder - Provides a fluent interface.
 	 */
-	public function increment($field, $ammount = 1)
+	public function increment($field, $amount, = 1)
 	{
-		$this->rawSets[$field] = $field . ' + ' . (int) $ammount;
+		$this->rawSets[$field] = $field . ' + ' . (int) $amount;
 
 		return $this;
 	}
@@ -272,12 +272,12 @@ class QueryBuilder extends Query
 	 * Decrement field value
 	 * Shortcut for increment()
 	 * @param string $field - Name of the field
-	 * @param int $ammount - Can be any signed integer, defaults to 1
+	 * @param int $amount - Can be any signed integer, defaults to 1
 	 * @return \OpenFlame\Dbal\QueryBuilder - Provides a fluent interface.
 	 */
-	public function decrement($field, $ammount = -1)
+	public function decrement($field, $amount = -1)
 	{
-		return $this->increment($field, $ammount);
+		return $this->increment($field, $amount);
 	}
 
 	/*
@@ -425,6 +425,11 @@ class QueryBuilder extends Query
 			}
 		}
 
+		if (strlen($this->orderBy))
+		{
+			$sql .= "ORDER BY {$this->orderBy} {$this->orderDirection}\n";
+		}
+
 		if ($this->limit > 0)
 		{
 			$sql .= "LIMIT {$this->limit}\n";
@@ -433,11 +438,6 @@ class QueryBuilder extends Query
 		if ($this->offset > 0)
 		{
 			$sql .= "OFFSET {$this->limit}\n";
-		}
-
-		if (strlen($this->orderBy))
-		{
-			$sql .= "ORDER BY {$this->orderBy} {$this->orderDirection}\n";
 		}
 
 		$this->sql($sql);
