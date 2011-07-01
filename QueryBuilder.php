@@ -246,9 +246,9 @@ class QueryBuilder extends Query
 	 * @param string $direction - ASC or DESC
 	 * @return \OpenFlame\Dbal\QueryBuilder - Provides a fluent interface.
 	 */
-	public function orderBy($fields, $direction)
+	public function orderBy($fields, $direction = 'ASC')
 	{
-		$this->orderBy = (string) $orderBy;
+		$this->orderBy = (string) $fields;
 		$this->orderDirection = (strtoupper($direction) == 'ASC') ? 'ASC' : 'DESC';
 
 		return $this;
