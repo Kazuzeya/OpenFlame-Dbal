@@ -437,7 +437,7 @@ class QueryBuilder extends Query
 
 		if ($this->offset > 0)
 		{
-			$sql .= "OFFSET {$this->limit}\n";
+			$sql .= "OFFSET {$this->offset}\n";
 		}
 
 		$this->sql($sql);
