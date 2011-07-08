@@ -11,8 +11,6 @@
 
 namespace OpenFlame\Dbal;
 
-if (!defined('OpenFlame\\ROOT_PATH')) exit;
-
 /**
  * OpenFlame Dbal - Connection
  * 	     Static class to connect and manage PDO instances for the querier

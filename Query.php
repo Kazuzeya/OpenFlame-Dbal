@@ -11,8 +11,6 @@
 
 namespace OpenFlame\Dbal;
 
-if (!defined('OpenFlame\\ROOT_PATH')) exit;
-
 /**
  * OpenFlame Dbal - Query
  * 	     Wraps around PDO to create an interface to query the database

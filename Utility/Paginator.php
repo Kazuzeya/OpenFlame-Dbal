@@ -11,8 +11,6 @@
 
 namespace OpenFlame\Dbal\Utility;
 
-if (!defined('OpenFlame\\ROOT_PATH')) exit;
-
 /**
  * OpenFlame Dbal - Paginator
  * 	     Provides a nice interface for paginating queries

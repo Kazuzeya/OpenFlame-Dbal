@@ -11,8 +11,6 @@
 
 namespace OpenFlame\Dbal\Utility;
 
-if (!defined('OpenFlame\\ROOT_PATH')) exit;
-
 /**
  * OpenFlame Dbal - Searcher
  * 	     A way to actually find waldo using any DBMS.
