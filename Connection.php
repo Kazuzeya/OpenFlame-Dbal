@@ -90,7 +90,7 @@ class Connection
 				throw new \RuntimeException($e->getMessage());
 			}
 
-			$type = reset(explode(':', $dsn));
+			list($type, ) = explode(':', $dsn, 2);
 
 			// sysbase and dblib are both used by MSSQL
 			if (!in_array($type, array('mysql', 'pgsql', 'sybase', 'dblib', 'sqlite', 'oci')))
