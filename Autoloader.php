@@ -1,8 +1,8 @@
 <?php
 /**
  *
- * @package     OpenFlame Dbal
- * @copyright   (c) 2010 openflame-project.org
+ * @package     openflame-dbal
+ * @copyright   (c) 2010 - 2011 openflame-project.org
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
  * @link        https://github.com/OpenFlame/OpenFlame-Dbal
  *
@@ -27,23 +27,27 @@ class Autoloader
 	private $paths = array();
 
 	/**
-	 * Constructor
-	 * @param array $paths - Extra paths to include in the autoload search
-	 * @return void
+	 * @var \OpenFlame\Dbal\Autoloader - The singleton autoloader instance.
 	 */
-	public function __construct($path)
+	private static $instance;
+
+	/**
+	 * @ignore
+	 */
+	private function __construct() { }
+
+	/**
+	 * Gets the singleton instance of the autoloader.
+	 * @param mixed $path - The path or array of paths to include in the autoload search.
+	 * @return \OpenFlame\Dbal\Autoloader - The singleton autoloader instance.
+	 */
+	public static function getInstance()
 	{
-		if(is_array($path))
+		if(self::$instance === NULL)
 		{
-			foreach($paths as $p)
-			{
-				$this->setPath($p);
-			}
+			self::$instance = new self();
 		}
-		else
-		{
-			$this->setPath($path);
-		}
+		return self::$instance;
 	}
 
 	/**
@@ -133,12 +137,24 @@ class Autoloader
 	/**
 	 * Register this class as an autoloader within the autoloader stack.
 	 * @param mixed $path - The path or array of paths to register with the autoloader.
-	 * @return \OpenFlame\Framework\Autoloader - The newly created autoloader instance.
+	 * @return \OpenFlame\Dbal\Autoloader - The autoloader instance.
 	 */
 	public static function register($path)
 	{
-		$self = new self($path);
-		spl_autoload_register(array($self, 'loadFile'));
-		return $self;
+		$autoloader = self::getInstance();
+		if(is_array($path))
+		{
+			foreach($path as $_path)
+			{
+				$autoloader->setPath($_path);
+			}
+		}
+		else
+		{
+			$autoloader->setPath($path);
+		}
+
+		spl_autoload_register(array($autoloader, 'loadFile'));
+		return $autoloader;
 	}
 }
