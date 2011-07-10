@@ -78,15 +78,6 @@ class QueryBuilder extends Query
 	const TYPE_DELETE = 4;
 	const TYPE_UPSERT = 5;
 
-	/*
-	 * Normal constructor
-	 * @param string $name - Connection name
-	 */
-	public function __construct($name = '')
-	{
-		parent::__construct($name);
-	}
-
 	/**
 	 * Start a SELECT statement
 	 * @param mixed - Fields to select
