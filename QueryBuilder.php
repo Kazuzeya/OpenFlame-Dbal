@@ -474,7 +474,10 @@ class QueryBuilder extends Query
 	{
 		if (!$this->queryRan || $hard)
 		{
-			$this->build();
+			if(!$hard)
+			{
+				$this->build();
+			}
 
 			parent::_query(true);
 		}
