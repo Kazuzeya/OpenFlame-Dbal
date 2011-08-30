@@ -11,6 +11,11 @@
 
 namespace OpenFlame\Dbal;
 
+use \PDO;
+use \PDOException;
+use \LogicException;
+use \RuntimeException;
+
 /**
  * OpenFlame Dbal - Connection
  * 	     Static class to connect and manage PDO instances for the querier
@@ -27,14 +32,16 @@ class Connection
 	private static $connections = array();
 
 	/*
+	 * Our connection object
 	 * @var instance of PDO
 	 */
-	private $pdo = null;
+	private $pdo = NULL;
 
 	/*
-	 * @var dmbs type
+	 * Driver Name
+	 * @var string
 	 */
-	private $type = '';
+	private $driver = '';
 
 	/*
 	 * Default connection name
@@ -60,67 +67,52 @@ class Connection
 
 	/*
 	 * Connect
+	 * @param object instanceof PDO
+	 * -- OR --
+	 * @param string dsn - Connection string 
+	 * @param string username - User used to connect to the DB
+	 * @param string password - Password for the user
+	 * @param array options - Driver-specific options
 	 */
 	public function connect()
 	{
 		$args = func_get_args();
 
-		if ($args[0] instanceof \PDO)
+		if ($args[0] instanceof PDO)
 		{
 			$this->pdo = $args[0];
-			$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		}
 		else if (isset($args[0]))
 		{
-			$dsn = (string) $args[0];
-			$user = isset($args[1]) ? (string) $args[1] : '';
-			$pass = isset($args[2]) ? (string) $args[2] : '';
-			$options = isset($args[3]) ? (array) $args[3] : array();
+			$dsn = $args[0];
+			$user = isset($args[1]) ? $args[1] : '';
+			$pass = isset($args[2]) ? $args[2] : '';
+			$options = isset($args[3]) ? $args[3] : array();
 
 			// Doing this before the connection, otherwise it will sit there 
 			// and hang if we have bad login details.
-			$options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
+			$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
 			try
 			{
-				$this->pdo = new \PDO($dsn, $user, $pass, $options);
+				$this->pdo = new PDO($dsn, $user, $pass, $options);
 			}
-			catch (\PDOException $e)
+			catch (PDOException $e)
 			{
-				throw new \RuntimeException($e->getMessage());
+				throw new RuntimeException($e->getMessage());
 			}
-
-			list($type, ) = explode(':', $dsn, 2);
-
-			// sysbase and dblib are both used by MSSQL
-			if (!in_array($type, array('mysql', 'pgsql', 'sybase', 'dblib', 'sqlite', 'oci')))
-			{
-				throw new \LogicException("Unsupported PDO driver");
-			}
-
-			$this->type = $type;
 		}
 		else
 		{
-			throw new \LogicException('\OpenFlame\Dbal\Connection::connect() was not given correct parameters');
+			throw new LogicException('\OpenFlame\Dbal\Connection::connect() was not given correct parameters');
 		}
-	}
 
-	/*
-	 * Set the database management system type 
-	 * This should ONLY be used if you created this connection via an instnace of PDO.
-	 * @param string $dbms - The database manage system string:
-	 * 	mysql, mysqli, sqlite, pgsql, oracle, mssql
-	 */
-	public function setDbms($type)
-	{
-		// sysbase and dblib are both used by MSSQL
-		if (!in_array($type, array('mysql', 'pgsql', 'sybase', 'dblib', 'sqlite', 'oci')))
+		$this->driver = $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+		if (!in_array($this->driver, array('mysql', 'pgsql', 'sybase', 'dblib', 'sqlite', 'oci')))
 		{
-			throw new \LogicException("Unsupported PDO driver");
+			throw new LogicException("Unsupported PDO driver: {$this->driver}");
 		}
-
-		$this->type = $type;
 	}
 
 	/*
@@ -130,7 +122,7 @@ class Connection
 	 */
 	public function getDbms()
 	{
-		return $this->type;
+		return $this->driver;
 	}
 
 	/*
@@ -140,9 +132,9 @@ class Connection
 	 */
 	public function get()
 	{
-		if ($this->pdo == null)
+		if ($this->pdo == NULL)
 		{
-			throw new \RuntimeException('Could not get PDO object from \OpenFlame\Dbal\Connection, object was NULL');
+			throw new RuntimeException('Could not get PDO object from \OpenFlame\Dbal\Connection, object was NULL');
 		}
 
 		return $this->pdo;
@@ -155,11 +147,11 @@ class Connection
 	 */
 	public function close()
 	{
-		if ($this->pdo == null)
+		if ($this->pdo == NULL)
 		{
-			throw new \RuntimeException('Could not close database connection, object was NULL already');
+			throw new RuntimeException('Could not close database connection, object was NULL already');
 		}
 
-		$this->pdo = null;
+		$this->pdo = NULL;
 	}
 }
