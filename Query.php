@@ -27,26 +27,6 @@ class Query
 	private $pdo;
 
 	/*
-	 * @var PDO Statement
-	 */
-	protected $stmt;
-
-	/*
-	 * @var SQL to be ran
-	 */
-	protected $sql = '';
-
-	/*
-	 * @var Statement params to be bound
-	 */
-	protected $params = array();
-
-	/*
-	 * @var has the query been ran yet?
-	 */
-	protected $queryRan = false;
-
-	/*
 	 * Statically create an instance
 	 * @param string $name - Connection name
 	 * @return new \OpenFlame\Dbal\Query
@@ -63,95 +43,5 @@ class Query
 	public function __construct($name = '')
 	{
 		$this->pdo = \OpenFlame\Dbal\Connection::getInstance($name)->get();
-	}
-
-	/*
-	 * Set the SQL to be ran
-	 * @param string $sql 
-	 * @return \OpenFlame\Dbal\Query - provides fluent interface 
-	 */
-	public function sql($sql)
-	{
-		$this->sql = (string) $sql;
-
-		return $this;
-	}
-
-	/*
-	 * Set params
-	 * @param array $params - to run through PDO's prepared statements
-	 * @return \OpenFlame\Dbal\Query - provides fluent interface 
-	 */
-	public function setParams($params = array())
-	{
-		$this->params = (array) $params;
-
-		return $this;
-	}
-
-	/**
-	 * Query and fetch a row 
-	 * @note - Safe for itteration
-	 * @return array - The result being fetched
-	 */
-	public function fetchRow()
-	{
-		$this->_query();
-
-		return $this->stmt->fetch(\PDO::FETCH_ASSOC);
-	}
-
-	/**
-	 * Query and fetch the rowset
-	 * @return array - Multi-dimensional associative array of the rowset being fetched
-	 */
-	public function fetchRowset()
-	{
-		$this->_query();
-
-		return $this->stmt->fetchAll(\PDO::FETCH_ASSOC);
-	}
-
-	/**
-	 * Excecute a query
-	 * @return int - Number of rows affected
-	 */
-	public function exec()
-	{
-		$this->_query();
-
-		return $this->stmt->rowCount();
-	}
-
-	/*
-	 * Get the last insert id
-	 * @return string - Insert ID
-	 */
-	public function insertId()
-	{
-		return $this->pdo->lastInsertId();
-	}
-
-	/*
-	 * Excecute a query (internally)
-	 * @param bool $hard - Run it even if a query has been ran for this instance.
-	 * @throws \PDOException, \LogicException
-	 */
-	protected function _query($hard = false)
-	{
-		if (!$this->queryRan || $hard)
-		{
-			$this->stmt = $this->pdo->prepare($this->sql);
-			$this->stmt->execute($this->params);
-
-			$this->queryRan = true;
-
-			list($e, $c, $m) = $this->stmt->errorInfo();
-
-			if ($c || strlen($m))
-			{
-				throw new \LogicException("SQL Error: {$e}, Code: {$c}. {$m}");
-			}
-		}
 	}
 }
