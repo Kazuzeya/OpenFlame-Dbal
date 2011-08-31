@@ -157,13 +157,32 @@ class Query
 
 	/**
 	 * Query and fetch the rowset
-	 * @return array - Multi-dimensional associative array of the rowset being fetched
+	 * @param string indexedBy - Optionally index your rowset by a column (like
+	 *	an ID). It will cast it to an int if it matches ctype_digit.
+	 * @return array - Multi-dimensional associative array of the rowset being 
+	 *	fetched
 	 */
-	public function fetchRowset()
+	public function fetchRowset($indexedBy = '')
 	{
 		$this->query();
+		$result = $this->smt->fetchAll(PDO::FETCH_ASSOC);
 
-		return $this->smt->fetchAll(PDO::FETCH_ASSOC);
+		if (!empty($indexedBy) && isset($result[0][$indexedBy]))
+		{
+			$newResult = array();
+
+			foreach($result as $rec)
+			{
+				$key = ctype_digit($rec[$indexedBy]) ? (int) $rec[$indexedBy] : $rec[$indexedBy];
+				$newResult[$key] = $rec;
+			}
+
+			return $newResult;
+		}
+		else
+		{
+			return $result;
+		}
 	}
 
 	/**
@@ -216,7 +235,7 @@ class Query
 
 					$this->sql = $sql;
 				break;
-				
+
 				default:
 					$this->sql .= "\nLIMIT {$this->limit}\nOFFSET {$this->offset}";
 				break;
