@@ -50,7 +50,7 @@ class Query
 	protected $sql = '';
 
 	/*
-	 * Limit
+	 * Limit (Default is -1, not doing limits)
 	 * @var limit
 	 */
 	protected $limit = -1;
@@ -59,7 +59,13 @@ class Query
 	 * Offset
 	 * @var int
 	 */
-	protected $offset = -1;
+	protected $offset = 0;
+
+	/*
+	 * Parameters
+	 * @var array
+	 */
+	protected $params = array();
 
 	/**
 	 * Statically create an instance
@@ -90,7 +96,7 @@ class Query
 	 */
 	public function sql($sql)
 	{
-		$this->sql = (string) $sql;
+		$this->sql = trim((string) $sql);
 
 		return $this;
 	}
@@ -105,6 +111,8 @@ class Query
 	 */
 	public function limit($limit)
 	{
+		$this->limit = (int) $limit;
+
 		return $this;
 	}
 
@@ -115,6 +123,20 @@ class Query
 	 */
 	public function offset($offset)
 	{
+		$this->offset = (int) $offset;
+
+		return $this;
+	}
+
+	/**
+	 * Set params
+	 * @param array parameters
+	 * @return \OpenFlame\Dbal\Query - provides fluent interface 
+	 */
+	public function setParams($params)
+	{
+		$this->params = (array) $params;
+
 		return $this;
 	}
 
@@ -161,11 +183,12 @@ class Query
 	 */
 	public function insertId()
 	{
-		if ($this->driver == 'pgsql' && preg_match("#^INSERT\s+INTO\s+([a-z0-9\_\-]+)\s+", $this->sql, $table))
+		if ($this->driver == 'pgsql' && preg_match("#^INSERT\s+INTO\s+([a-z0-9\_\-]+)\s+#i", $this->sql, $table))
 		{
-			$result = $this->pdo->query("SELECT currval('{$table[1]}_seq') AS last_insert_id");
-
-			return !empty($result->fetchColumn()) ? (int) $result['last_insert_id'] : false;
+			// We're using currval() here to grab that ID.
+			// http://www.postgresql.org/docs/8.2/interactive/functions-sequence.html
+			$result = $this->pdo->query("SELECT currval('{$table[1]}_seq') AS _last_insert_id");
+			return (strlen($result->fetchColumn()) < 1) ? (int) $result['_last_insert_id'] : false;
 		}
 
 		return $this->pdo->lastInsertId();
@@ -177,6 +200,28 @@ class Query
 	 */
 	private function query()
 	{
+		// Handle limits/offsets
+		if ($this->limit > 0)
+		{
+			switch ($this->driver)
+			{
+				case 'mssql':
+					preg_match("#^(SELECT(\s+DISTINCT)?)#i", $this->sql, $type);
+					preg_match("#ORDER\s+BY\s+([a-z0-9]+(,\s*[a-z0-9]+)*)#i", $this->sql, $orderBys);
+					
+					$sql =  $type[1] . ' TOP ' . ($this->limit + $this->offset);
+					$sql .= " ROW_NUMBER() OVER (ORDER BY {$orderBys[1]}) AS _row_num, ";
+					$sql .= substr($this->sql, strlen($type[1]));
+
+					$this->sql = $sql;
+				break;
+				
+				default:
+					$this->sql .= "\nLIMIT {$this->limit}\nOFFSET {$this->offset}";
+				break;
+			}
+		}
+
 		$this->smt = $this->pdo->prepare($this->sql);
 		$this->smt->execute($this->params);
 	}
