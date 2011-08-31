@@ -120,7 +120,7 @@ class Connection
 	 * @return string - The database management system string:
 	 * 	mysql, mysqli, sqlite, pgsql, oracle, mssql
 	 */
-	public function getDbms()
+	public function getDriver()
 	{
 		return $this->driver;
 	}
