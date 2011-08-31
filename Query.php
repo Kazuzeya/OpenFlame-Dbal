@@ -38,12 +38,6 @@ class Query
 	private $statement = NULL;
 
 	/**
-	 * Driver for the connection
-	 * @var string 
-	 */
-	protected $driver = '';
-
-	/**
 	 * SQL query 
 	 * @var string 
 	 */
@@ -74,7 +68,9 @@ class Query
 	 */
 	public static function newInstance($name = '')
 	{
-		return new static($name);
+		$class = '\\OpenFlame\\Dbal\\DBMS\\' . Connection::getInstance($name)->getDriver();
+
+		return new $class($name);
 	}
 
 	/**
@@ -83,10 +79,7 @@ class Query
 	 */
 	public function __construct($name = '')
 	{
-		$conn = Connection::getInstance($name);
-
-		$this->pdo = $conn->get();
-		$this->driver = $conn->getDriver();
+		$this->pdo = Connection::getInstance($name)->get();
 	}
 
 	/**
@@ -202,14 +195,6 @@ class Query
 	 */
 	public function insertId()
 	{
-		if ($this->driver == 'pgsql' && preg_match("#^INSERT\s+INTO\s+([a-z0-9\_\-]+)\s+#i", $this->sql, $table))
-		{
-			// We're using currval() here to grab that ID.
-			// http://www.postgresql.org/docs/8.2/interactive/functions-sequence.html
-			$result = $this->pdo->query("SELECT currval('{$table[1]}_seq') AS _last_insert_id");
-			return (strlen($result->fetchColumn()) < 1) ? (int) $result['_last_insert_id'] : false;
-		}
-
 		return $this->pdo->lastInsertId();
 	}
 
@@ -219,27 +204,9 @@ class Query
 	 */
 	private function query()
 	{
-		// Handle limits/offsets
 		if ($this->limit > 0)
 		{
-			switch ($this->driver)
-			{
-				case 'mssql':
-					preg_match("#^(SELECT(\s+DISTINCT)?)#i", $this->sql, $type);
-					preg_match("#ORDER\s+BY\s+([a-z0-9]+(,\s*[a-z0-9]+)*)#i", $this->sql, $orderBys);
-
-					$sql =  $type[1] . ' TOP ' . ($this->limit + $this->offset);
-					$sql .= " ROW_NUMBER() OVER (ORDER BY {$orderBys[1]}) AS _row_num, ";
-					$sql .= substr($this->sql, strlen($type[1]));
-					$sql .= (strpos($sql, 'WHERE') !== false) ? ' WHERE _row_num >= ' . $offset : ' AND _row_num >= ' . $offset;
-
-					$this->sql = $sql;
-				break;
-
-				default:
-					$this->sql .= "\nLIMIT {$this->limit}\nOFFSET {$this->offset}";
-				break;
-			}
+			$this->sql .= "\nLIMIT {$this->limit}\nOFFSET {$this->offset}";
 		}
 
 		$this->statement = $this->pdo->prepare($this->sql);

@@ -109,7 +109,7 @@ class Connection
 		}
 
 		$this->driver = $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-		if (!in_array($this->driver, array('mysql', 'pgsql', 'sybase', 'dblib', 'sqlite', 'oci')))
+		if (!class_exists("\\OpenFlame\\Dbal\\DBMS\\{$this->driver}"))
 		{
 			throw new LogicException("Unsupported PDO driver: {$this->driver}");
 		}
