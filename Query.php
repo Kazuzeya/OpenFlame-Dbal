@@ -35,7 +35,7 @@ class Query
 	 * Statement for our query 
 	 * @var PDOStatement 
 	 */
-	private $smt = NULL;
+	private $statement = NULL;
 
 	/**
 	 * Driver for the connection
@@ -147,12 +147,12 @@ class Query
 	 */
 	public function fetchRow()
 	{
-		if ($this->smt == NULL)
+		if ($this->statement == NULL)
 		{
 			$this->query();
 		}
 
-		return $this->smt->fetch(PDO::FETCH_ASSOC);
+		return $this->statement->fetch(PDO::FETCH_ASSOC);
 	}
 
 	/**
@@ -165,7 +165,7 @@ class Query
 	public function fetchRowset($indexedBy = '')
 	{
 		$this->query();
-		$result = $this->smt->fetchAll(PDO::FETCH_ASSOC);
+		$result = $this->statement->fetchAll(PDO::FETCH_ASSOC);
 
 		if (!empty($indexedBy) && isset($result[0][$indexedBy]))
 		{
@@ -193,7 +193,7 @@ class Query
 	{
 		$this->query();
 
-		return $this->smt->rowCount();
+		return $this->statement->rowCount();
 	}
 
 	/*
@@ -242,7 +242,7 @@ class Query
 			}
 		}
 
-		$this->smt = $this->pdo->prepare($this->sql);
-		$this->smt->execute($this->params);
+		$this->statement = $this->pdo->prepare($this->sql);
+		$this->statement->execute($this->params);
 	}
 }
