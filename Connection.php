@@ -88,7 +88,7 @@ class Connection
 			$dsn = $args[0];
 			$user = isset($args[1]) ? $args[1] : '';
 			$pass = isset($args[2]) ? $args[2] : '';
-			$options = isset($args[3]) ? $args[3] : array();
+			$options = isset($args[3]) ? (array) $args[3] : array();
 
 			// Doing this before the connection, otherwise it will sit there 
 			// and hang if we have bad login details.
@@ -100,7 +100,7 @@ class Connection
 			}
 			catch (PDOException $e)
 			{
-				throw new RuntimeException($e->getMessage());
+				throw new RuntimeException("Connection failed: " . $e->getMessage());
 			}
 		}
 		else
@@ -117,7 +117,7 @@ class Connection
 
 	/*
 	 * Get the database management system type
-	 * @return string - The database manage system string:
+	 * @return string - The database management system string:
 	 * 	mysql, mysqli, sqlite, pgsql, oracle, mssql
 	 */
 	public function getDbms()
