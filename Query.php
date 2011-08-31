@@ -208,10 +208,11 @@ class Query
 				case 'mssql':
 					preg_match("#^(SELECT(\s+DISTINCT)?)#i", $this->sql, $type);
 					preg_match("#ORDER\s+BY\s+([a-z0-9]+(,\s*[a-z0-9]+)*)#i", $this->sql, $orderBys);
-					
+
 					$sql =  $type[1] . ' TOP ' . ($this->limit + $this->offset);
 					$sql .= " ROW_NUMBER() OVER (ORDER BY {$orderBys[1]}) AS _row_num, ";
 					$sql .= substr($this->sql, strlen($type[1]));
+					$sql .= (strpos($sql, 'WHERE') !== false) ? ' WHERE _row_num >= ' . $offset : ' AND _row_num >= ' . $offset;
 
 					$this->sql = $sql;
 				break;
