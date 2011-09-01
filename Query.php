@@ -29,13 +29,13 @@ class Query
 	 * Connection Object
 	 * @var instance of PDO 
 	 */
-	private $pdo = NULL;
+	protected $pdo = NULL;
 
 	/**
 	 * Statement for our query 
 	 * @var PDOStatement 
 	 */
-	private $statement = NULL;
+	protected $statement = NULL;
 
 	/**
 	 * SQL query 
@@ -180,12 +180,21 @@ class Query
 
 	/**
 	 * Excecute a query
-	 * @return int - Number of rows affected
+	 * @return \OpenFlame\Dbal\Query - provides fluent interface 
 	 */
 	public function exec()
 	{
 		$this->query();
 
+		return $this;
+	}
+
+	/**
+	 * Get Row Count
+	 * @return int - Number of rows affected
+	 */
+	public function getRowCount()
+	{
 		return $this->statement->rowCount();
 	}
 
