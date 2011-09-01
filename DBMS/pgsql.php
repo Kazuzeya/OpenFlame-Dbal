@@ -36,9 +36,10 @@ class pgsql extends Query
 		if (preg_match("#^INSERT\s+INTO\s+([a-z0-9\_\-]+)\s+#i", $this->sql, $table))
 		{
 			// We're using currval() here to grab that ID.
+			// The only requirement is that the sequencer MUST be {tablename}_seq
 			// http://www.postgresql.org/docs/8.2/interactive/functions-sequence.html
 			$result = $this->pdo->query("SELECT currval('{$table[1]}_seq') AS _last_insert_id");
-			return (strlen($result->fetchColumn()) < 1) ? (int) $result['_last_insert_id'] : false;
+			return ($result !== false) ? (int) $result->fetchColumn(0) : false;
 		}
 
 		return false;
