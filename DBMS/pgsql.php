@@ -25,7 +25,7 @@ class pgsql extends Query
 {
 	/*
 	 * Get the last insert id for PgSQL.
-	 * @return string - Insert ID
+	 * @return string - The insert id.
 	 */
 	public function insertId()
 	{

@@ -22,14 +22,13 @@ namespace OpenFlame\Dbal;
 class QueryBuilder
 {
 	/*
-	 * Instance of \OpenFlame\Dbal\Query() (or an extending class)
-	 * @var object \OpenFlame\Dbal\Query()
+	 * @var object \OpenFlame\Dbal\Query - Instance of \OpenFlame\Dbal\Query or an extending class.
 	 */
 	private $query;
 
 	/*
 	 * Get a new instance the fluent interface way.
-	 * @param object (optional) - Instance of a custom Driver inheriting \OpenFlame\Dbal\Query
+	 * @param object (optional) - Instance of a custom driver inheriting \OpenFlame\Dbal\Query.
 	 * -- OR --
 	 * @param string (optional) - Connection name, defaults to default conneciton.
 	 *
@@ -42,18 +41,18 @@ class QueryBuilder
 
 	/*
 	 * Constructor.
-	 * @param object (optional) - Instance of a custom Driver inheriting \OpenFlame\Dbal\Query()
+	 * @param object (optional) - Instance of a custom driver inheriting \OpenFlame\Dbal\Query.
 	 * -- OR --
-	 * @param string (optional) - Connection name, defaults to default conneciton
+	 * @param string (optional) - Connection name, defaults to default conneciton.
 	 */
 	public function __construct($arg = NULL)
 	{
-		// Check to see if it is an instance of Query (or a class extending that)
+		// Check to see if it is an instance of \OpenFlame\Dbal\Query, or a class extending.
 		if($arg instanceof \OpenFlame\Dbal\Query)
 		{
 			$this->query = $arg;
 		}
-		// Next is default query handling with a non-default connection
+		// Default query handling with a non-default connection.
 		else
 		{
 			$name = (string) $arg;

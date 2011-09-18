@@ -22,10 +22,9 @@ namespace OpenFlame\Dbal;
 class Connection
 {
 	/*
-	 * @var static instances of this class
-	 * @var \OpenFlame\Dbal\Connection - Array of singleton instances of this object.
+	 * @var \OpenFlame\Dbal\Connection - Singleton instance of this object.
 	 */
-	private static $connections = array();
+	private static $instances = array();
 
 	/*
 	 * @var \PDO - Our connection object.
@@ -44,19 +43,19 @@ class Connection
 
 	/*
 	 * Static constructor.
-	 * @param string $name - Name of the connection, or empty if using the default 
-	 * @return \OpenFlame\Dbal\Connection - Specific instance of this class specified by the $name param  
+	 * @param string $name - Name of the connection, or empty if using the default.
+	 * @return \OpenFlame\Dbal\Connection - Specific instance of this class as specified by the $name param.
 	 */
 	public static function getInstance($name = '')
 	{
 		$name = empty($name) ? static::DEFAULT_CON_NAME : '_' . (string) $name;
 
-		if(!isset(static::$connections[$name]))
+		if(!isset(static::$instances[$name]))
 		{
-			static::$connections[$name] = new static();
+			static::$instances[$name] = new static();
 		}
 
-		return static::$connections[$name];
+		return static::$instances[$name];
 	}
 
 	/*
@@ -84,8 +83,7 @@ class Connection
 			$pass = isset($args[2]) ? $args[2] : '';
 			$options = isset($args[3]) ? (array) $args[3] : array();
 
-			// Doing this before the connection, otherwise it will sit there 
-			// and hang if we have bad login details.
+			// Doing this before the connection, otherwise it will sit there and hang if we have bad login details.
 			$options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
 
 			try
@@ -94,7 +92,7 @@ class Connection
 			}
 			catch(\PDOException $e)
 			{
-				throw new \RuntimeException("Connection failed: " . $e->getMessage());
+				throw new \RuntimeException('Connection failed: ' . $e->getMessage());
 			}
 		}
 		else
@@ -105,14 +103,13 @@ class Connection
 		$this->driver = $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
 		if(!class_exists("\\OpenFlame\\Dbal\\DBMS\\{$this->driver}"))
 		{
-			throw new \LogicException("Unsupported PDO driver: {$this->driver}");
+			throw new \LogicException(sprintf('Unsupported PDO driver: %s', $this->driver));
 		}
 	}
 
 	/*
-	 * Get the database management system type
-	 * @return string - The database management system string:
-	 * 	mysql, mysqli, sqlite, pgsql, oracle, mssql
+	 * Get the database driver.
+	 * @return string - The database management system string.
 	 */
 	public function getDriver()
 	{
@@ -121,7 +118,7 @@ class Connection
 
 	/*
 	 * Get the PDO instance
-	 * @return - Instance of \PDO
+	 * @return - \PDO instance.
 	 *
 	 * @throws \RuntimeException
 	 */

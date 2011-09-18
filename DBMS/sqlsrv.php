@@ -24,12 +24,11 @@ use \OpenFlame\Dbal\Query;
 class sqlsrv extends Query
 {
 	/**
-	 * Excecute a query (internally)
-	 * @throws PDOException
+	 * Excecute a query.
 	 */
 	private function query()
 	{
-		// Handle limits/offsets
+		// Handle limits/offsets.
 		if($this->limit > 0)
 		{
 			preg_match("#^(SELECT(\s+DISTINCT)?)#i", $this->sql, $type);

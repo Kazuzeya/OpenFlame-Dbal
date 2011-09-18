@@ -26,14 +26,12 @@ use \RuntimeException;
 class Query
 {
 	/**
-	 * Connection Object
-	 * @var instance of PDO 
+	 * @var \PDO - Our connection object.
 	 */
 	protected $pdo = NULL;
 
 	/**
-	 * Statement for our query 
-	 * @var PDOStatement 
+	 * @var \PDOStatement - The statement for our query.
 	 */
 	protected $statement = NULL;
 
@@ -43,27 +41,24 @@ class Query
 	protected $sql = '';
 
 	/*
-	 * Limit (Default is -1, not doing limits)
-	 * @var limit
+	 * @var $limit - The limit. Default -1, not doing limits.
 	 */
 	protected $limit = -1;
 
 	/*
-	 * Offset
-	 * @var int
+	 * @var int - Offset.
 	 */
 	protected $offset = 0;
 
 	/*
-	 * Parameters
-	 * @var array
+	 * @var array - Parameters.
 	 */
 	protected $params = array();
 
 	/**
-	 * Statically create an instance
-	 * @param string $name - Connection name
-	 * @return new \OpenFlame\Dbal\Query
+	 * Statically create an instance.
+	 * @param string $name - The Connection name.
+	 * @return \OpenFlame\Dbal\Query - New instance of \OpenFlame\Dbal\Query.
 	 */
 	public static function newInstance($name = '')
 	{
@@ -94,12 +89,11 @@ class Query
 	}
 
 	/**
-	 * Set the limit to the query
-	 * This is not mean to be in query builder as this is a database 
-	 * abstraction layer. It should provide full abstraction at this level.
-	 *
+	 * Set the limit to the query.
 	 * @param int limit
-	 * @return \OpenFlame\Dbal\Query - Provides a fluent interface. 
+	 * @return \OpenFlame\Dbal\Query - Provides a fluent interface.
+	 *
+	 * @note - This is not mean to be in query builder as this is a database abstraction layer. It should provide full abstraction at this level.
 	 */
 	public function limit($limit)
 	{
@@ -121,8 +115,8 @@ class Query
 	}
 
 	/**
-	 * Set params
-	 * @param array parameters
+	 * Set paramaters.
+	 * @param array - The parameters.
 	 * @return \OpenFlame\Dbal\Query - Provides a fluent interface.
 	 */
 	public function setParams($params)
@@ -133,13 +127,14 @@ class Query
 	}
 
 	/**
-	 * Query and fetch a row 
-	 * @note - Safe for itteration
-	 * @return array - The result being fetched
+	 * Query and fetch a row.
+	 * @return array - The result being fetched.
+	 *
+	 * @note - Safe for itteration.
 	 */
 	public function fetchRow()
 	{
-		if ($this->statement == NULL)
+		if($this->statement == NULL)
 		{
 			$this->query();
 		}
@@ -149,10 +144,8 @@ class Query
 
 	/**
 	 * Query and fetch the rowset.
-	 * @param string indexedBy - Optionally index your rowset by a column (like
-	 *	an ID). It will cast it to an int if it matches ctype_digit.
-	 * @return array - Multi-dimensional associative array of the rowset being 
-	 *	fetched
+	 * @param string $indexedBy - Optionally index your rowset by a column (like an ID). It will cast it to an int if it matches ctype_digit.
+	 * @return array - Multi-dimensional associative array of the rowset being fetched.
 	 */
 	public function fetchRowset($indexedBy = '')
 	{
@@ -189,7 +182,7 @@ class Query
 	}
 
 	/**
-	 * Get Row Count
+	 * Get row count.
 	 * @return int - Number of rows affected
 	 */
 	public function getRowCount()
@@ -199,7 +192,7 @@ class Query
 
 	/*
 	 * Get the last insert id.
-	 * @return string - Insert ID
+	 * @return string - The last insert id.
 	 */
 	public function insertId()
 	{
@@ -207,7 +200,7 @@ class Query
 	}
 
 	/**
-	 * Excecute a query (internally)
+	 * Excecute a query.
 	 * 
 	 * @throws \PDOException
 	 */
