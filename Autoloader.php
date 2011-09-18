@@ -12,7 +12,7 @@
 namespace OpenFlame\Dbal;
 
 /**
- * OpenFlame Dbal - Autoloader object
+ * OpenFlame Dbal - Autoloader object,
  * 	     Provides just-in-time class autoloading functionality.
  *
  *

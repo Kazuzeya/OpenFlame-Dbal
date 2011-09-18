@@ -16,8 +16,8 @@ use \LogicException;
 use \RuntimeException;
 
 /**
- * OpenFlame Dbal - Query
- * 	     Wraps around PDO to create an interface to query the database
+ * OpenFlame Dbal - Query,
+ * 	     Wraps around PDO to create an interface to query the database.
  *
  *
  * @license     http://opensource.org/licenses/mit-license.php The MIT License

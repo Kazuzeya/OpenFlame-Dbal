@@ -12,8 +12,8 @@
 namespace OpenFlame\Dbal;
 
 /**
- * OpenFlame Dbal - Query Builder
- * 	     Wraps around PDO to create an interface to query the database
+ * OpenFlame Dbal - Query Builder,
+ * 	     Wraps around PDO to create an interface to query the database.
  *
  *
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
@@ -28,7 +28,7 @@ class QueryBuilder
 	private $query;
 
 	/*
-	 * Get a new instnace the fluent interface way
+	 * Get a new instance the fluent interface way.
 	 * @param object (optional) - Instance of a custom Driver inheriting \OpenFlame\Dbal\Query()
 	 * -- OR --
 	 * @param string (optional) - Connection name, defaults to default conneciton
@@ -53,7 +53,7 @@ class QueryBuilder
 		{
 			$this->query = $arg;
 		}
-		// Next is default query handing with a non-default connection
+		// Next is default query handling with a non-default connection
 		else
 		{
 			$name = (string) $arg;
