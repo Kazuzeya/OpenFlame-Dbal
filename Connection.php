@@ -17,8 +17,8 @@ use \LogicException;
 use \RuntimeException;
 
 /**
- * OpenFlame Dbal - Connection
- * 	     Static class to connect and manage PDO instances for the querier
+ * OpenFlame Dbal - Connection,
+ * 	     Static class to connect and manage PDO instances for the querier.
  *
  *
  * @license     http://opensource.org/licenses/mit-license.php The MIT License

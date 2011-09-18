@@ -16,8 +16,8 @@ use \LogicException;
 use \RuntimeException;
 
 /**
- * OpenFlame Dbal - Query
- * 	     Wraps around PDO to create an interface to query the database
+ * OpenFlame Dbal - Query,
+ * 	     Wraps around PDO to create an interface to query the database.
  *
  *
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
@@ -85,7 +85,7 @@ class Query
 	/**
 	 * Set the SQL to be ran
 	 * @param string $sql 
-	 * @return \OpenFlame\Dbal\Query - provides fluent interface 
+	 * @return \OpenFlame\Dbal\Query - provides a fluent interface 
 	 */
 	public function sql($sql)
 	{
@@ -100,7 +100,7 @@ class Query
 	 * abstraction layer. It should provide full abstraction at this level.
 	 *
 	 * @param int limit
-	 * @return \OpenFlame\Dbal\Query - provides fluent interface 
+	 * @return \OpenFlame\Dbal\Query - provides a fluent interface 
 	 */
 	public function limit($limit)
 	{
@@ -112,7 +112,7 @@ class Query
 	/**
 	 * Offset the result set
 	 * @param int offset 
-	 * @return \OpenFlame\Dbal\Query - provides fluent interface 
+	 * @return \OpenFlame\Dbal\Query - provides a fluent interface 
 	 */
 	public function offset($offset)
 	{
@@ -124,7 +124,7 @@ class Query
 	/**
 	 * Set params
 	 * @param array parameters
-	 * @return \OpenFlame\Dbal\Query - provides fluent interface 
+	 * @return \OpenFlame\Dbal\Query - provides a fluent interface 
 	 */
 	public function setParams($params)
 	{

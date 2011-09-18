@@ -17,8 +17,8 @@ use \RuntimeException;
 use \OpenFlame\Dbal\Query;
 
 /**
- * OpenFlame Dbal - oci Query
- * 	     DBMS specific extention to \OpenFlame\Dbal\Query
+ * OpenFlame Dbal - oci Query,
+ * 	     DBMS specific extension of \OpenFlame\Dbal\Query.
  *
  *
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
