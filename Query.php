@@ -11,10 +11,6 @@
 
 namespace OpenFlame\Dbal;
 
-use \PDO;
-use \LogicException;
-use \RuntimeException;
-
 /**
  * OpenFlame Dbal - Query,
  * 	     Wraps around PDO to create an interface to query the database.
@@ -46,12 +42,12 @@ class Query
 	protected $limit = -1;
 
 	/*
-	 * @var int - Offset.
+	 * @var int - The offset.
 	 */
 	protected $offset = 0;
 
 	/*
-	 * @var array - Parameters.
+	 * @var array - Parameters to use.
 	 */
 	protected $params = array();
 
@@ -77,8 +73,8 @@ class Query
 	}
 
 	/**
-	 * Set the SQL to be ran
-	 * @param string $sql
+	 * Set the SQL to be ran.
+	 * @param string $sql - The SQL to be ran.
 	 * @return \OpenFlame\Dbal\Query - Provides a fluent interface.
 	 */
 	public function sql($sql)
@@ -90,7 +86,7 @@ class Query
 
 	/**
 	 * Set the limit to the query.
-	 * @param int limit
+	 * @param int $limit - The limit.
 	 * @return \OpenFlame\Dbal\Query - Provides a fluent interface.
 	 *
 	 * @note - This is not mean to be in query builder as this is a database abstraction layer. It should provide full abstraction at this level.
@@ -103,8 +99,8 @@ class Query
 	}
 
 	/**
-	 * Offset the result set
-	 * @param int offset 
+	 * Offset the result set.
+	 * @param int $offset - The offset.
 	 * @return \OpenFlame\Dbal\Query - Provides a fluent interface.
 	 */
 	public function offset($offset)
@@ -183,7 +179,7 @@ class Query
 
 	/**
 	 * Get row count.
-	 * @return int - Number of rows affected
+	 * @return int - Number of rows affected.
 	 */
 	public function getRowCount()
 	{

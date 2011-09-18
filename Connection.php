@@ -37,13 +37,13 @@ class Connection
 	private $driver = '';
 
 	/*
-	 * Default connection name
+	 * @var string - Default connection name.
 	 */
 	const DEFAULT_CON_NAME = 'default';
 
 	/*
 	 * Static constructor.
-	 * @param string $name - Name of the connection, or empty if using the default.
+	 * @param string $name - Name of the connection, or empty if using default.
 	 * @return \OpenFlame\Dbal\Connection - Specific instance of this class as specified by the $name param.
 	 */
 	public static function getInstance($name = '')
@@ -60,12 +60,12 @@ class Connection
 
 	/*
 	 * Connect to the database.
-	 * @param object - \PDO instance
+	 * @param object \PDO - Our PDO instance.
 	 * -- OR --
-	 * @param string $dsn - Connection string 
-	 * @param string $username - User used to connect to the DB
-	 * @param string $password - Password for the user
-	 * @param array $options - Driver-specific options
+	 * @param string $dsn - Connection string.
+	 * @param string $username - User used to connect to the DB.
+	 * @param string $password - Password for the user.
+	 * @param array $options - Driver-specific options.
 	 */
 	public function connect()
 	{
@@ -117,8 +117,8 @@ class Connection
 	}
 
 	/*
-	 * Get the PDO instance
-	 * @return - \PDO instance.
+	 * Get the PDO instance.
+	 * @return - \PDO - Our PDO instance.
 	 *
 	 * @throws \RuntimeException
 	 */
