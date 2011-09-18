@@ -38,8 +38,7 @@ class Query
 	protected $statement = NULL;
 
 	/**
-	 * SQL query 
-	 * @var string 
+	 * @var string - The SQL query.
 	 */
 	protected $sql = '';
 
@@ -74,8 +73,8 @@ class Query
 	}
 
 	/**
-	 * Normal constructor
-	 * @param string $name - Connection name
+	 * Constructor.
+	 * @param string $name - The connection name.
 	 */
 	public function __construct($name = '')
 	{
@@ -84,8 +83,8 @@ class Query
 
 	/**
 	 * Set the SQL to be ran
-	 * @param string $sql 
-	 * @return \OpenFlame\Dbal\Query - provides a fluent interface 
+	 * @param string $sql
+	 * @return \OpenFlame\Dbal\Query - Provides a fluent interface.
 	 */
 	public function sql($sql)
 	{
@@ -100,7 +99,7 @@ class Query
 	 * abstraction layer. It should provide full abstraction at this level.
 	 *
 	 * @param int limit
-	 * @return \OpenFlame\Dbal\Query - provides a fluent interface 
+	 * @return \OpenFlame\Dbal\Query - Provides a fluent interface. 
 	 */
 	public function limit($limit)
 	{
@@ -112,7 +111,7 @@ class Query
 	/**
 	 * Offset the result set
 	 * @param int offset 
-	 * @return \OpenFlame\Dbal\Query - provides a fluent interface 
+	 * @return \OpenFlame\Dbal\Query - Provides a fluent interface.
 	 */
 	public function offset($offset)
 	{
@@ -124,7 +123,7 @@ class Query
 	/**
 	 * Set params
 	 * @param array parameters
-	 * @return \OpenFlame\Dbal\Query - provides a fluent interface 
+	 * @return \OpenFlame\Dbal\Query - Provides a fluent interface.
 	 */
 	public function setParams($params)
 	{
@@ -145,11 +144,11 @@ class Query
 			$this->query();
 		}
 
-		return $this->statement->fetch(PDO::FETCH_ASSOC);
+		return $this->statement->fetch(\PDO::FETCH_ASSOC);
 	}
 
 	/**
-	 * Query and fetch the rowset
+	 * Query and fetch the rowset.
 	 * @param string indexedBy - Optionally index your rowset by a column (like
 	 *	an ID). It will cast it to an int if it matches ctype_digit.
 	 * @return array - Multi-dimensional associative array of the rowset being 
@@ -158,9 +157,9 @@ class Query
 	public function fetchRowset($indexedBy = '')
 	{
 		$this->query();
-		$result = $this->statement->fetchAll(PDO::FETCH_ASSOC);
+		$result = $this->statement->fetchAll(\PDO::FETCH_ASSOC);
 
-		if (!empty($indexedBy) && isset($result[0][$indexedBy]))
+		if(!empty($indexedBy) && isset($result[0][$indexedBy]))
 		{
 			$newResult = array();
 
@@ -179,8 +178,8 @@ class Query
 	}
 
 	/**
-	 * Excecute a query
-	 * @return \OpenFlame\Dbal\Query - provides fluent interface 
+	 * Excecute a query.
+	 * @return \OpenFlame\Dbal\Query - Provides a fluent interface.
 	 */
 	public function exec()
 	{
@@ -199,7 +198,7 @@ class Query
 	}
 
 	/*
-	 * Get the last insert id
+	 * Get the last insert id.
 	 * @return string - Insert ID
 	 */
 	public function insertId()
@@ -209,11 +208,12 @@ class Query
 
 	/**
 	 * Excecute a query (internally)
-	 * @throws PDOException
+	 * 
+	 * @throws \PDOException
 	 */
 	private function query()
 	{
-		if ($this->limit > 0)
+		if($this->limit > 0)
 		{
 			$this->sql .= "\nLIMIT {$this->limit}\nOFFSET {$this->offset}";
 		}

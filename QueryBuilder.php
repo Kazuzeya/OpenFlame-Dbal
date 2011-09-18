@@ -29,27 +29,27 @@ class QueryBuilder
 
 	/*
 	 * Get a new instance the fluent interface way.
-	 * @param object (optional) - Instance of a custom Driver inheriting \OpenFlame\Dbal\Query()
+	 * @param object (optional) - Instance of a custom Driver inheriting \OpenFlame\Dbal\Query
 	 * -- OR --
-	 * @param string (optional) - Connection name, defaults to default conneciton
+	 * @param string (optional) - Connection name, defaults to default conneciton.
 	 *
-	 * @return instance of QueryBuilder
+	 * @return \OpenFlame\Dbal\QueryBuilder
 	 */
-	public static function newInstance($arg = null)
+	public static function newInstance($arg = NULL)
 	{
 		return new static($arg);
 	}
 
 	/*
-	 * Constructor
+	 * Constructor.
 	 * @param object (optional) - Instance of a custom Driver inheriting \OpenFlame\Dbal\Query()
 	 * -- OR --
 	 * @param string (optional) - Connection name, defaults to default conneciton
 	 */
-	public function __construct($arg = null)
+	public function __construct($arg = NULL)
 	{
 		// Check to see if it is an instance of Query (or a class extending that)
-		if ($arg instanceof \OpenFlame\Dbal\Query)
+		if($arg instanceof \OpenFlame\Dbal\Query)
 		{
 			$this->query = $arg;
 		}

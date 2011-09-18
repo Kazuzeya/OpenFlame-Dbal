@@ -11,11 +11,6 @@
 
 namespace OpenFlame\Dbal;
 
-use \PDO;
-use \PDOException;
-use \LogicException;
-use \RuntimeException;
-
 /**
  * OpenFlame Dbal - Connection,
  * 	     Static class to connect and manage PDO instances for the querier.
@@ -28,18 +23,17 @@ class Connection
 {
 	/*
 	 * @var static instances of this class
+	 * @var \OpenFlame\Dbal\Connection - Array of singleton instances of this object.
 	 */
 	private static $connections = array();
 
 	/*
-	 * Our connection object
-	 * @var instance of PDO
+	 * @var \PDO - Our connection object.
 	 */
 	private $pdo = NULL;
 
 	/*
-	 * Driver Name
-	 * @var string
+	 * @var string - The driver name.
 	 */
 	private $driver = '';
 
@@ -49,7 +43,7 @@ class Connection
 	const DEFAULT_CON_NAME = 'default';
 
 	/*
-	 * Static constructor
+	 * Static constructor.
 	 * @param string $name - Name of the connection, or empty if using the default 
 	 * @return \OpenFlame\Dbal\Connection - Specific instance of this class specified by the $name param  
 	 */
@@ -57,7 +51,7 @@ class Connection
 	{
 		$name = empty($name) ? static::DEFAULT_CON_NAME : '_' . (string) $name;
 
-		if (!isset(static::$connections[$name]))
+		if(!isset(static::$connections[$name]))
 		{
 			static::$connections[$name] = new static();
 		}
@@ -66,24 +60,24 @@ class Connection
 	}
 
 	/*
-	 * Connect
-	 * @param object instanceof PDO
+	 * Connect to the database.
+	 * @param object - \PDO instance
 	 * -- OR --
-	 * @param string dsn - Connection string 
-	 * @param string username - User used to connect to the DB
-	 * @param string password - Password for the user
-	 * @param array options - Driver-specific options
+	 * @param string $dsn - Connection string 
+	 * @param string $username - User used to connect to the DB
+	 * @param string $password - Password for the user
+	 * @param array $options - Driver-specific options
 	 */
 	public function connect()
 	{
 		$args = func_get_args();
 
-		if ($args[0] instanceof PDO)
+		if($args[0] instanceof \PDO)
 		{
 			$this->pdo = $args[0];
-			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		}
-		else if (isset($args[0]))
+		else if(isset($args[0]))
 		{
 			$dsn = $args[0];
 			$user = isset($args[1]) ? $args[1] : '';
@@ -92,26 +86,26 @@ class Connection
 
 			// Doing this before the connection, otherwise it will sit there 
 			// and hang if we have bad login details.
-			$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+			$options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
 
 			try
 			{
-				$this->pdo = new PDO($dsn, $user, $pass, $options);
+				$this->pdo = new \PDO($dsn, $user, $pass, $options);
 			}
-			catch (PDOException $e)
+			catch(\PDOException $e)
 			{
-				throw new RuntimeException("Connection failed: " . $e->getMessage());
+				throw new \RuntimeException("Connection failed: " . $e->getMessage());
 			}
 		}
 		else
 		{
-			throw new LogicException('\OpenFlame\Dbal\Connection::connect() was not given correct parameters');
+			throw new \LogicException('\OpenFlame\Dbal\Connection::connect() was not given correct parameters');
 		}
 
-		$this->driver = $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-		if (!class_exists("\\OpenFlame\\Dbal\\DBMS\\{$this->driver}"))
+		$this->driver = $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
+		if(!class_exists("\\OpenFlame\\Dbal\\DBMS\\{$this->driver}"))
 		{
-			throw new LogicException("Unsupported PDO driver: {$this->driver}");
+			throw new \LogicException("Unsupported PDO driver: {$this->driver}");
 		}
 	}
 
@@ -128,28 +122,30 @@ class Connection
 	/*
 	 * Get the PDO instance
 	 * @return - Instance of \PDO
+	 *
 	 * @throws \RuntimeException
 	 */
 	public function get()
 	{
-		if ($this->pdo == NULL)
+		if($this->pdo == NULL)
 		{
-			throw new RuntimeException('Could not get PDO object from \OpenFlame\Dbal\Connection, object was NULL');
+			throw new \RuntimeException('Could not get PDO object from \OpenFlame\Dbal\Connection, object was NULL');
 		}
 
 		return $this->pdo;
 	}
 
 	/*
-	 * Close the connection
+	 * Close the database connection.
 	 * @param string $name - Name of the connection, or empty if using the default
-	 * @throws \RuntimeException()
+	 *
+	 * @throws \RuntimeException
 	 */
 	public function close()
 	{
-		if ($this->pdo == NULL)
+		if($this->pdo == NULL)
 		{
-			throw new RuntimeException('Could not close database connection, object was NULL already');
+			throw new \RuntimeException('Could not close database connection, object was NULL already');
 		}
 
 		$this->pdo = NULL;

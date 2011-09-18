@@ -10,10 +10,6 @@
  */
 
 namespace OpenFlame\Dbal\DBMS;
-
-use \PDO;
-use \LogicException;
-use \RuntimeException;
 use \OpenFlame\Dbal\Query;
 
 /**
@@ -27,4 +23,5 @@ use \OpenFlame\Dbal\Query;
 
 class mysql extends Query
 {
+	
 }

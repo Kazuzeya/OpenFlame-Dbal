@@ -10,10 +10,6 @@
  */
 
 namespace OpenFlame\Dbal\DBMS;
-
-use \PDO;
-use \LogicException;
-use \RuntimeException;
 use \OpenFlame\Dbal\Query;
 
 /**
@@ -34,7 +30,7 @@ class sqlsrv extends Query
 	private function query()
 	{
 		// Handle limits/offsets
-		if ($this->limit > 0)
+		if($this->limit > 0)
 		{
 			preg_match("#^(SELECT(\s+DISTINCT)?)#i", $this->sql, $type);
 			preg_match("#ORDER\s+BY\s+([a-z0-9]+(,\s*[a-z0-9]+)*)#i", $this->sql, $orderBys);

@@ -10,10 +10,6 @@
  */
 
 namespace OpenFlame\Dbal\DBMS;
-
-use \PDO;
-use \LogicException;
-use \RuntimeException;
 use \OpenFlame\Dbal\Query;
 
 /**
@@ -28,12 +24,12 @@ use \OpenFlame\Dbal\Query;
 class pgsql extends Query
 {
 	/*
-	 * Get the last insert id for PgSQL
+	 * Get the last insert id for PgSQL.
 	 * @return string - Insert ID
 	 */
 	public function insertId()
 	{
-		if (preg_match("#^INSERT\s+INTO\s+([a-z0-9\_\-]+)\s+#i", $this->sql, $table))
+		if(preg_match("#^INSERT\s+INTO\s+([a-z0-9\_\-]+)\s+#i", $this->sql, $table))
 		{
 			// We're using currval() here to grab that ID.
 			// The only requirement is that the sequencer MUST be {tablename}_seq
