@@ -118,7 +118,7 @@ class Connection
 
 	/*
 	 * Get the PDO instance.
-	 * @return - \PDO - Our PDO instance.
+	 * @return \PDO - Our PDO instance.
 	 *
 	 * @throws \RuntimeException
 	 */

@@ -126,7 +126,7 @@ class Query
 	 * Query and fetch a row.
 	 * @return array - The result being fetched.
 	 *
-	 * @note - Safe for itteration.
+	 * @note - Safe for iteration.
 	 */
 	public function fetchRow()
 	{
